@@ -29,7 +29,6 @@ and ip for sending on replay packets.
 
 Another fields like mac, host and lease_flag sets to zero or NULL.
 
-
 ### <p id="2">leasing ip address to pool</p>
 
  - update lease flag to true

@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 3.6)
 
-
+set(PROJECT_NAME lease_test)
 set(FAKE_DBS scripts/dhcpd.db)
 set(FAKER_SCRIPT scripts/faker.py)
+
+project(${PROJECT_NAME})
 
 find_path(PYTHON_EXECUTABLE_DIR NAMES python3)
 
@@ -28,3 +30,13 @@ if(NOT ${FAKE_DATABASE_PATH})
 endif()
 
 file(COPY ${FAKE_DBS} DESTINATION databases)
+
+add_executable(${PROJECT_NAME}
+    lease_test.c
+    main.c
+)
+
+target_link_libraries(${PROJECT_NAME}
+    cunit
+    lib::lease
+)

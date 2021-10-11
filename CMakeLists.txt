@@ -42,6 +42,8 @@ add_library(${PROJECT_NAME}
     src/lease.c
 )
 
+add_library(lib::lease ALIAS ${PROJECT_NAME})
+
 target_link_libraries(${PROJECT_NAME}
     cunit
     sqlite3

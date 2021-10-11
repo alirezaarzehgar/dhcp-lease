@@ -3,7 +3,7 @@ import sqlite3
 import pathlib
 from typing import Any
 from scapy.all import RandMAC
-from scapy.volatile import RandIP, RandNum, RandString
+from scapy.volatile import RandChoice, RandIP, RandNum, RandString
 
 
 class Queries():
@@ -157,7 +157,7 @@ class Faker():
             hostname = None
             mac = None
             
-            if i % 2 == 1:
+            if RandNum(0, 5) <= 3:
                 hostname = str(RandString(7))
                 mac = str(RandMAC())
                 

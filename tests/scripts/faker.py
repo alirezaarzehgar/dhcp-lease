@@ -158,7 +158,7 @@ class Faker():
             hostname = None
             mac = None
             
-            if RandNum(0, 5) <= 3:
+            if RandNum(0, 6) <= 3:
                 hostname = str(RandString(7))
                 mac = str(RandMAC())
                 lease_flag = True

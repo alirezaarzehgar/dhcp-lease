@@ -29,6 +29,13 @@ and ip for sending on replay packets.
 
 Another fields like mac, host and lease_flag sets to zero or NULL.
 
+
+### <p id="2">leasing ip address to pool</p>
+
+ - update lease flag to true
+ - fill mac address field
+ - fill hostname field
+
 After getting request and when sending ack,
 we should update non reserved ip address on previous step.
 
@@ -36,12 +43,6 @@ We have an id and required parameters like mac, host and lease_flag :
 ```sql
 UPDATE pool SET mac = "some-mac-address", host = "some-hostname", lease_flag = 1 WHERE id = 1;
 ```
-
-### <p id="2">leasing ip address to pool</p>
-
- - update lease flag to true
- - fill mac address field
- - fill hostname field
 
 ### <p id="#3">Database schema</p>
 

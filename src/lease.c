@@ -12,9 +12,16 @@
 #include "lease/lease.h"
 
 dhcpLeasePoolResult_t
-dhcpLeaseGetIpFromPool()
+dhcpLeaseGetIpFromPool (const char *dbpath)
 {
-  /* TODO */
+  sqlite3 *db;
+
+  unsigned int retval;
+
+  retval = sqlite3_open (dbpath, &db);
+
+
+  sqlite3_close (db);
 }
 
 bool

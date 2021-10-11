@@ -18,6 +18,25 @@ What this fucntion works ?
     - if exists send ip
     - if does not exists search to leases and if this ip doesn't reserved, send ip
 
+#### in depth of operation
+
+First of all we should get the first no reserved ip address with this query :
+```sql
+SELECT id, conf_id, ip FROM pool WHERE lease_flag = 0 LIMIT 1;
+```
+We need id for updating on ack, conf_id for sending typical options
+and ip for sending on replay packets.
+
+Another fields like mac, host and lease_flag sets to zero or NULL.
+
+After getting request and when sending ack,
+we should update non reserved ip address on previous step.
+
+We have an id and required parameters like mac, host and lease_flag :
+```sql
+UPDATE pool SET mac = "some-mac-address", host = "some-hostname", lease_flag = 1 WHERE id = 1;
+```
+
 ### <p id="2">leasing ip address to pool</p>
 
  - update lease flag to true

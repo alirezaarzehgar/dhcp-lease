@@ -59,7 +59,7 @@ class Queries():
         );
         '''.format(self.tables["config"], mask, router, domain, lease_time)
 
-    def _createSqlFieldAndValue(self, cols, handler):
+    def _createSqlFieldAndValue(self, cols, handler, get_values = False):
         string = ""
 
         index = 0
@@ -73,13 +73,18 @@ class Queries():
             tempHandler = dataHandler
 
         for col in cols:
+            val = col
+
+            if get_values:
+                val = tempHandler(cols[col])
+
             coma = ', '
 
             if index == len(cols) - 1:
                 coma = ''
 
             if cols[col] != None:
-                string += '{}{}'.format(tempHandler(col), coma)
+                string += '{}{}'.format(val, coma)
 
             index += 1
 
@@ -97,11 +102,18 @@ class Queries():
 
         query = "INSERT INTO " + self.tables["pool"] + " ("
 
-        query += self._createSqlFieldAndValue(cols, None)
+        query += self._createSqlFieldAndValue(
+            cols=cols,
+            handler=None
+        )
 
         query += ") VALUES ("
 
-        query += self._createSqlFieldAndValue(cols, self._wrapOnQoat)
+        query += self._createSqlFieldAndValue(
+            cols=cols,
+            handler=self._wrapOnQoat,
+            get_values=True
+        )
         
         query += ');'
 

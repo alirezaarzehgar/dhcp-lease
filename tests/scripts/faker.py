@@ -153,17 +153,19 @@ class Faker():
 
     def pool(self):
         for i in range(15):
+            lease_flag = False
             ip = "192.168.133." + str(i + 1)
             hostname = None
             mac = None
             
-            if RandNum(0, 5) <= 3:
+            if RandNum(0, 6) <= 3:
                 hostname = str(RandString(7))
                 mac = str(RandMAC())
+                lease_flag = True
                 
             self.conn.execute(
                 self.qr.insertToPool(
-                    (i % 5) + 1, ip,
+                    lease_flag, ip,
                     hostname, mac,
                     i % 2
                 )

@@ -1,6 +1,7 @@
 from abc import abstractclassmethod, abstractmethod
 import sqlite3
 import pathlib
+from typing import Any
 from scapy.all import RandMAC
 from scapy.volatile import RandIP, RandNum, RandString
 
@@ -27,9 +28,9 @@ class Queries():
         return '''CREATE TABLE {} ( 
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             conf_id INTEGER NOT NULL,
-            ip TEXT NOT NULL,
-            host TEXT NOT NULL,
-            mac TEXT NOT NULL,
+            ip TEXT,
+            host TEXT,
+            mac TEXT,
             lease_flag INTEGER NOT NULL DEFAULT 0,
             FOREIGN KEY (conf_id) REFERENCES config(id)
             );'''.format(self.tables["pool"])
@@ -37,6 +38,15 @@ class Queries():
     def deleteAll(self, conn: sqlite3.Connection):
         for table in self.tables:
             conn.execute("DROP TABLE IF EXISTS {};".format(table))
+
+    def _wrapOnQoat(self, str: str) -> str:
+        return '"{}"'.format(str)
+
+    def _getQoatedIfStr(self, value: Any) -> str:
+        if type(value) == str:
+            return self._wrapOnQoat(value)
+        else:
+            return value
 
     def insertToConf(self, mask: str, router: str, domain: str, lease_time: int) -> None:
         return '''INSERT INTO {} (
@@ -49,17 +59,54 @@ class Queries():
         );
         '''.format(self.tables["config"], mask, router, domain, lease_time)
 
-    def insertToPool(self, config_id: int, ip: str, host: str, mac: str, lease_flag: bool) -> None:
-        return '''INSERT INTO {} (
-            conf_id,
-            ip,
-            host,
-            mac,
-            lease_flag
-        ) VALUES (
-            {}, "{}", "{}", "{}", {}
-        );
-        '''.format(self.tables["pool"], config_id, ip, host, mac, lease_flag)
+    def _createSqlFieldAndValue(self, cols, handler):
+        string = ""
+
+        index = 0
+
+        def dataHandler(data):
+            return data
+
+        tempHandler = handler
+
+        if handler == None:
+            tempHandler = dataHandler
+
+        for col in cols:
+            coma = ', '
+
+            if index == len(cols) - 1:
+                coma = ''
+
+            if cols[col] != None:
+                string += '{}{}'.format(tempHandler(col), coma)
+
+            index += 1
+
+        return string
+
+
+    def insertToPool(self, conf_id: int, ip: str, host: str, mac: str, lease_flag: bool) -> None:
+        cols = {
+            "conf_id" : conf_id,
+            "ip" : ip,
+            "host" : host,
+            "mac" : mac,
+            "lease_flag" : lease_flag
+        }
+
+        query = "INSERT INTO " + self.tables["pool"] + " ("
+
+        query += self._createSqlFieldAndValue(cols, None)
+
+        query += ") VALUES ("
+
+        query += self._createSqlFieldAndValue(cols, self._wrapOnQoat)
+        
+        query += ');'
+
+        return query
+
 
 class Faker():
     def __init__(self, conn: sqlite3.Connection, quiery: Queries) -> None:
@@ -98,10 +145,10 @@ class Faker():
             hostname = None
             mac = None
             
-            if i % 2 == 0:
+            if i % 2 == 1:
                 ip = "192.168.1." + str(RandNum(1, 255))
-                hostname = RandString(7)
-                mac = RandMAC()
+                hostname = str(RandString(7))
+                mac = str(RandMAC())
                 
             self.conn.execute(
                 self.qr.insertToPool(

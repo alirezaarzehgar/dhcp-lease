@@ -3,6 +3,8 @@
 #include <unistd.h>
 #include <stdbool.h>
 #include <sqlite3.h>
+#include <errno.h>
+#include <string.h>
 
 #include "database.h"
 
@@ -19,15 +21,24 @@
     "SELECT " \
           LEASE_POOL_ID ", " \
           LEASE_POOL_CONFIG_ID ", " \
-          LEASE_POOL_IP ", " \
-          LEASE_POOL_HOST ", " \
-          LEASE_POOL_MAC ", " \
-          LEASE_POOL_LEASE_FLAG ", " \
+          LEASE_POOL_IP " " \
     "FROM " LEASE_POOL_TABLE_NAME " WHERE " LEASE_POOL_LEASE_FLAG " = 0 LIMIT 1;"
+
+#define DHCP_LEASE_GET_CONFIG_BY_ID_FORMAT_STRING     \
+    "SELECT " \
+    LEASE_CONFIG_FIELD_ID ", "      \
+    LEASE_CONFIG_MASK ", "      \
+    LEASE_CONFIG_ROUTER ", "      \
+    LEASE_CONFIG_DOMAIN ", "      \
+    LEASE_CONFIG_LEASE_TIME " "   \
+    "FROM " LEASE_CONFIG_TABLE_NAME " WHERE "    \
+    LEASE_CONFIG_FIELD_ID " = ("  \
+      "SELECT " LEASE_CONFIG_FIELD_ID " FROM " LEASE_POOL_TABLE_NAME " WHERE id = %d"  \
+    ");"
 
 typedef struct
 {
-  u_int16_t id;
+  unsigned int id;
 
   char mask[DHCP_LEASE_SUBNET_STR_LEN];
 
@@ -35,13 +46,13 @@ typedef struct
 
   char domain[DHCP_LEASE_DOMAIN_STR_MAX_LEN];
 
-  u_int32_t lease_time;
+  unsigned int lease_time;
 
 } dhcpLeaseConfigResult_t;
 
 typedef struct
 {
-  u_int16_t id;
+  unsigned int id;
 
   char ip[DHCP_LEASE_IP_STR_LEN];
 
@@ -54,6 +65,8 @@ typedef struct
   dhcpLeaseConfigResult_t config;
 
 } dhcpLeasePoolResult_t;
+
+dhcpLeaseConfigResult_t dhcpLeaseGetConfigById(sqlite3 *db, unsigned int id);
 
 dhcpLeasePoolResult_t dhcpLeaseGetIpFromPool (const char *dbpath);
 

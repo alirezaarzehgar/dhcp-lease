@@ -2,6 +2,7 @@
 #define LEASE_DATABASE_H
 
 /* config table */
+#define LEASE_CONFIG_FIELD_ID                   "id"
 #define LEASE_CONFIG_TABLE_NAME                 "config"
 #define LEASE_CONFIG_ID                         "conf_id"
 #define LEASE_CONFIG_MASK                       "mask"

@@ -1,6 +1,8 @@
 from abc import abstractclassmethod, abstractmethod
 import sqlite3
 import pathlib
+from scapy.all import RandMAC
+from scapy.volatile import RandIP, RandNum, RandString
 
 
 class Queries():
@@ -81,7 +83,7 @@ class Faker():
                 self.qr.insertToConf(
                     "255.255.255." + str(5 * i),
                     "192.168.1." + str(i * 8),
-                    str(i * 12) + ".example.com",
+                    str(RandString(5)) + ".example.com",
                     600
                 )
             )
@@ -92,12 +94,19 @@ class Faker():
 
     def pool(self):
         for i in range(15):
+            ip = None
+            hostname = None
+            mac = None
+            
+            if i % 2 == 0:
+                ip = "192.168.1." + str(RandNum(1, 255))
+                hostname = RandString(7)
+                mac = RandMAC()
+                
             self.conn.execute(
                 self.qr.insertToPool(
-                    (i % 5) + 1,
-                    "192.168.1." + str(i),
-                    "ali" + str(i),
-                    "12:a2:32:08:00:a1",
+                    (i % 5) + 1, ip,
+                    hostname, mac,
                     i % 2
                 )
             )

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.6)
 
 
-set(FAKE_DBS database/dhcpd.db)
+set(FAKE_DBS scripts/dhcpd.db)
 set(FAKER_SCRIPT scripts/faker.py)
 
 find_path(PYTHON_EXECUTABLE_DIR NAMES python3)
@@ -25,8 +25,6 @@ if(NOT ${FAKE_DATABASE_PATH})
     if(NOT PYTHON_FAKER_SCRIPT_RESULT EQUAL "0")
         message(FATAL_ERROR "can't run script")
     endif()
-    
 endif()
-
 
 file(COPY ${FAKE_DBS} DESTINATION databases)

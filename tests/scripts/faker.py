@@ -28,7 +28,7 @@ class Queries():
         return '''CREATE TABLE {} ( 
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             conf_id INTEGER NOT NULL,
-            ip TEXT,
+            ip TEXT NOT NULL,
             host TEXT,
             mac TEXT,
             lease_flag INTEGER NOT NULL DEFAULT 0,
@@ -153,12 +153,11 @@ class Faker():
 
     def pool(self):
         for i in range(15):
-            ip = None
+            ip = "192.168.133." + str(i + 1)
             hostname = None
             mac = None
             
             if i % 2 == 1:
-                ip = "192.168.1." + str(RandNum(1, 255))
                 hostname = str(RandString(7))
                 mac = str(RandMAC())
                 

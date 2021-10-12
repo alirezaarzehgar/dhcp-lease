@@ -121,4 +121,17 @@ dhcpLeaseIpAddress (dhcpLeasePoolResult_t lease)
 {
   int retval;
 
+  char sql[strlen (DHCP_LEASE_RESERVE_ADDRESS_FORMAT_STRING) +
+                  DHCP_LEASE_MAC_STR_MAX_LEN + DHCP_LEASE_HOSTNAME_STR_MAX_LEN];
+
+  int flag = false;
+
+  if (db == NULL)
+    return false;
+
+  retval = sqlite3_exec (db, sql, NULL, NULL, NULL);
+
+  flag = retval == SQLITE_OK;
+
+  return flag;
 }

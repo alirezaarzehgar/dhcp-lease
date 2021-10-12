@@ -36,7 +36,7 @@
       "SELECT " LEASE_CONFIG_FIELD_ID " FROM " LEASE_POOL_TABLE_NAME " WHERE id = %d"     \
     ");"
 
-#define DHCP_LEASE_RESERVE_MAC_ADDRESS_FORMAT_STRING      \
+#define DHCP_LEASE_RESERVE_ADDRESS_FORMAT_STRING      \
     "UPDATE "       \
     LEASE_POOL_TABLE_NAME " "   \
     "SET "          \

@@ -30,9 +30,9 @@ dhcpLeaseGetIpFromPoolTest()
 
   bzero (&lease, sizeof (dhcpLeasePoolResult_t));
 
-  dhcpLeaseInit(FAKE_DATABASE_PATH);
+  dhcpLeaseInit (FAKE_DATABASE_PATH);
 
-  lease = dhcpLeaseGetIpFromPool ();
+  lease = dhcpLeaseGetIpFromPool();
 
   dhcpLeaseClose();
 
@@ -53,5 +53,13 @@ dhcpLeaseGetIpFromPoolTest()
 void
 dhcpLeaseIpAddressTest()
 {
-  /* TODO */
+  dhcpLeasePoolResult_t lease;
+
+  dhcpLeaseInit (FAKE_DATABASE_PATH);
+
+  lease = dhcpLeaseGetIpFromPool();
+
+  dhcpLeaseIpAddress (lease);
+
+  dhcpLeaseClose();
 }

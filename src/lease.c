@@ -131,10 +131,10 @@ dhcpLeaseIpAddress (unsigned int id, const char *mac, const char *host)
   if (db == NULL || id == 0 || strlen (mac) == 0)
     return false;
 
-  if (strlen (host) > 0)
-    sprintf (hostField, "\"%s\"", host);
+  if (host == NULL)
+    strcpy (hostField, "NULL");
   else
-    sprintf (hostField, "NULL");
+    sprintf (hostField, "\"%s\"", host);
 
   sprintf (sql, DHCP_LEASE_RESERVE_ADDRESS_FORMAT_STRING, mac, hostField, id);
 

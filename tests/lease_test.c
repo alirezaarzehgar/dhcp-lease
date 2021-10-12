@@ -12,6 +12,8 @@
 #include "lease_test.h"
 #include <CUnit/CUnit.h>
 
+#define CLIENT_MAC_ADDERSS "ab:aa:14:4f:64:5d"
+
 int
 initSuiteLease()
 {
@@ -33,7 +35,7 @@ dhcpLeaseGetIpFromPoolTest()
 
   dhcpLeaseInit (FAKE_DATABASE_PATH);
 
-  lease = dhcpLeaseGetIpFromPool();
+  lease = dhcpLeaseGetIpFromPool(CLIENT_MAC_ADDERSS);
 
   dhcpLeaseClose();
 
@@ -60,9 +62,9 @@ dhcpLeaseIpAddressTest()
 
   dhcpLeaseInit (FAKE_DATABASE_PATH);
 
-  lease = dhcpLeaseGetIpFromPool();
+  lease = dhcpLeaseGetIpFromPool(CLIENT_MAC_ADDERSS);
 
-  retval = dhcpLeaseIpAddress (lease.id, "52:54:00:87:db:5f", "ali");
+  retval = dhcpLeaseIpAddress (lease.id, CLIENT_MAC_ADDERSS, "ali");
 
   dhcpLeaseClose();
 

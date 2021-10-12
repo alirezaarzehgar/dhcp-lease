@@ -9,6 +9,13 @@
  *
  */
 
+/**
+ * @@@@@@@@@@@   Important Note    @@@@@@@@@@@
+ * 
+ * This code just running and is very very shit code.
+ * We should refactor it and improve it's clean code.
+ */
+
 #include "lease/lease.h"
 
 static sqlite3 *db = NULL;
@@ -29,6 +36,78 @@ dhcpLeaseClose()
 {
   sqlite3_close (db);
   db = NULL;
+}
+
+int
+dhcpLeaseMacAddressAlreadyExists (char *mac)
+{
+  int retval;
+
+  int count = 0;
+
+  char sql[160];
+
+  int
+  callback (void *countPtr, int argc, char **argv, char **col)
+  {
+    int *count = (int *)countPtr;
+
+    *count = atoi (argv[0]);
+
+    return SQLITE_OK;
+  }
+
+  if (db == NULL)
+    return -1;
+
+  sprintf (sql, DHCP_LEASE_FIND_ID_BY_MAC_FORMAT_STRING, mac);
+
+  retval = sqlite3_exec (db, sql, callback, &count, NULL);
+
+  if (retval != SQLITE_OK)
+    return -1;
+
+  return count;
+}
+
+dhcpLeasePoolResult_t
+dhcpLeaseGetPoolById (unsigned int id)
+{
+  int retval;
+
+  dhcpLeasePoolResult_t pool;
+
+  char sql[strlen (DHCP_LEASE_GET_POOL_BY_ID_FORMAT_STRING) + 5];
+
+  int
+  callback (void *lease, int argc, char **argv, char **col)
+  {
+    dhcpLeasePoolResult_t *localLease = (dhcpLeasePoolResult_t *)lease;
+
+    localLease->id = atoi (argv[0]);
+
+    localLease->config = dhcpLeaseGetConfigById (atoi (argv[1]));
+
+    strncpy (localLease->ip, argv[2], DHCP_LEASE_IP_STR_LEN);
+
+    return SQLITE_OK;
+  }
+
+  bzero (&pool, sizeof (dhcpLeaseConfigResult_t));
+
+  bzero (&sql, sizeof (sql));
+
+  if (db == NULL)
+    return pool;
+
+  sprintf (sql, DHCP_LEASE_GET_POOL_BY_ID_FORMAT_STRING, id);
+
+  retval = sqlite3_exec (db, sql, callback, &pool, NULL);
+
+  if (retval != SQLITE_OK)
+    bzero (&pool, sizeof (dhcpLeasePoolResult_t));
+
+  return pool;
 }
 
 dhcpLeaseConfigResult_t
@@ -76,7 +155,7 @@ dhcpLeaseGetConfigById (unsigned int id)
 }
 
 dhcpLeasePoolResult_t
-dhcpLeaseGetIpFromPool()
+dhcpLeaseGetIpFromPool (char *mac)
 {
   unsigned int retval;
 
@@ -107,11 +186,15 @@ dhcpLeaseGetIpFromPool()
   if (db == NULL)
     return lease;
 
-  retval = sqlite3_exec (db, DHCP_LEASE_GET_NON_RESERVED_IP, callback, &lease,
-                         NULL);
-
-  if (retval != SQLITE_OK)
-    bzero (&lease, sizeof (dhcpLeasePoolResult_t));
+  if ((retval = dhcpLeaseMacAddressAlreadyExists (mac)) > 0)
+    lease = dhcpLeaseGetPoolById (retval);
+  else
+    {
+      retval = sqlite3_exec (db, DHCP_LEASE_GET_NON_RESERVED_IP, callback, &lease,
+                             NULL);
+      if (retval != SQLITE_OK)
+        bzero (&lease, sizeof (dhcpLeasePoolResult_t));
+    }
 
   return lease;
 }

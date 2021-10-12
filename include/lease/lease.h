@@ -36,6 +36,14 @@
       "SELECT " LEASE_CONFIG_FIELD_ID " FROM " LEASE_POOL_TABLE_NAME " WHERE id = %d"     \
     ");"
 
+#define DHCP_LEASE_GET_POOL_BY_ID_FORMAT_STRING     \
+    "SELECT "     \
+    LEASE_POOL_ID ", "      \
+    LEASE_POOL_CONFIG_ID ", "     \
+    LEASE_POOL_IP " "     \
+    "FROM " LEASE_POOL_TABLE_NAME " WHERE "     \
+    LEASE_POOL_ID " = %d"
+
 #define DHCP_LEASE_RESERVE_ADDRESS_FORMAT_STRING      \
     "UPDATE "       \
     LEASE_POOL_TABLE_NAME " "   \
@@ -44,6 +52,9 @@
     LEASE_POOL_HOST " = %s, "    \
     LEASE_POOL_LEASE_FLAG " = 1 "     \
     "WHERE " LEASE_POOL_ID " = %d;"
+
+#define DHCP_LEASE_FIND_ID_BY_MAC_FORMAT_STRING       \
+  "SELECT " LEASE_POOL_ID " FROM " LEASE_POOL_TABLE_NAME " WHERE " LEASE_POOL_MAC " = \"%s\";"
 
 typedef struct
 {
@@ -79,9 +90,11 @@ int dhcpLeaseInit (const char *path);
 
 void dhcpLeaseClose();
 
+int dhcpLeaseMacAddressAlreadyExists (char *mac);
+
 dhcpLeaseConfigResult_t dhcpLeaseGetConfigById (unsigned int id);
 
-dhcpLeasePoolResult_t dhcpLeaseGetIpFromPool ();
+dhcpLeasePoolResult_t dhcpLeaseGetIpFromPool (char *mac);
 
 bool dhcpLeaseIpAddress (unsigned int id, const char *mac, const char *host);
 

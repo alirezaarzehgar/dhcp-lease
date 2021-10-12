@@ -10,6 +10,7 @@
  */
 
 #include "lease_test.h"
+#include <CUnit/CUnit.h>
 
 int
 initSuiteLease()
@@ -30,9 +31,9 @@ dhcpLeaseGetIpFromPoolTest()
 
   bzero (&lease, sizeof (dhcpLeasePoolResult_t));
 
-  dhcpLeaseInit(FAKE_DATABASE_PATH);
+  dhcpLeaseInit (FAKE_DATABASE_PATH);
 
-  lease = dhcpLeaseGetIpFromPool ();
+  lease = dhcpLeaseGetIpFromPool();
 
   dhcpLeaseClose();
 
@@ -53,5 +54,17 @@ dhcpLeaseGetIpFromPoolTest()
 void
 dhcpLeaseIpAddressTest()
 {
-  /* TODO */
+  dhcpLeasePoolResult_t lease;
+
+  int retval;
+
+  dhcpLeaseInit (FAKE_DATABASE_PATH);
+
+  lease = dhcpLeaseGetIpFromPool();
+
+  retval = dhcpLeaseIpAddress (lease.id, "52:54:00:87:db:5f", "ali");
+
+  dhcpLeaseClose();
+
+  CU_ASSERT_TRUE (retval);
 }

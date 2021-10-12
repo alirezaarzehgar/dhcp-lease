@@ -117,8 +117,23 @@ dhcpLeaseGetIpFromPool()
 }
 
 bool
-dhcpLeaseIpAddress (dhcpLeasePoolResult_t lease)
+dhcpLeaseIpAddress (unsigned int id, const char *mac, const char *host)
 {
   int retval;
 
+  char sql[strlen (DHCP_LEASE_RESERVE_ADDRESS_FORMAT_STRING) +
+                  DHCP_LEASE_MAC_STR_MAX_LEN + DHCP_LEASE_HOSTNAME_STR_MAX_LEN];
+
+  int flag = false;
+
+  if (db == NULL || id == 0 || strlen (mac) == 0 || strlen (host) == 0)
+    return false;
+
+  sprintf (sql, DHCP_LEASE_RESERVE_ADDRESS_FORMAT_STRING, mac, host, id);
+
+  retval = sqlite3_exec (db, sql, NULL, NULL, NULL);
+
+  flag = retval == SQLITE_OK;
+
+  return flag;
 }

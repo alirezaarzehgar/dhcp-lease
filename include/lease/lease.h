@@ -36,12 +36,13 @@
       "SELECT " LEASE_CONFIG_FIELD_ID " FROM " LEASE_POOL_TABLE_NAME " WHERE id = %d"     \
     ");"
 
-#define DHCP_LEASE_RESERVE_MAC_ADDRESS_FORMAT_STRING      \
+#define DHCP_LEASE_RESERVE_ADDRESS_FORMAT_STRING      \
     "UPDATE "       \
     LEASE_POOL_TABLE_NAME " "   \
     "SET "          \
-    LEASE_POOL_MAC " = %s, "    \
-    LEASE_POOL_HOST " = %s "    \
+    LEASE_POOL_MAC " = \"%s\", "    \
+    LEASE_POOL_HOST " = \"%s\", "    \
+    LEASE_POOL_LEASE_FLAG " = 1 "     \
     "WHERE " LEASE_POOL_ID " = %d;"
 
 typedef struct
@@ -82,6 +83,6 @@ dhcpLeaseConfigResult_t dhcpLeaseGetConfigById (unsigned int id);
 
 dhcpLeasePoolResult_t dhcpLeaseGetIpFromPool ();
 
-bool dhcpLeaseIpAddress (dhcpLeasePoolResult_t lease);
+bool dhcpLeaseIpAddress (unsigned int id, const char *mac, const char *host);
 
 #endif // LEASE_H

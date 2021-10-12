@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 3.6)
 
+if(TARGET ${PROJECT_NAME})
+    message(STATUS "this project already imported")
+    return()
+endif()
+
 set(PROJECT_NAME lease)
 set(LEASE_TESTS tests)
 

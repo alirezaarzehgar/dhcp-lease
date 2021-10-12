@@ -10,6 +10,7 @@
  */
 
 #include "lease_test.h"
+#include <CUnit/CUnit.h>
 
 int
 initSuiteLease()
@@ -55,11 +56,15 @@ dhcpLeaseIpAddressTest()
 {
   dhcpLeasePoolResult_t lease;
 
+  int retval;
+
   dhcpLeaseInit (FAKE_DATABASE_PATH);
 
   lease = dhcpLeaseGetIpFromPool();
 
-  dhcpLeaseIpAddress (lease);
+  retval = dhcpLeaseIpAddress (lease);
 
   dhcpLeaseClose();
+
+  CU_ASSERT_TRUE (retval);
 }

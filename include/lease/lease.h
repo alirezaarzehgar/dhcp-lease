@@ -40,8 +40,9 @@
     "UPDATE "       \
     LEASE_POOL_TABLE_NAME " "   \
     "SET "          \
-    LEASE_POOL_MAC " = %s, "    \
-    LEASE_POOL_HOST " = %s "    \
+    LEASE_POOL_MAC " = \"%s\", "    \
+    LEASE_POOL_HOST " = \"%s\", "    \
+    LEASE_POOL_LEASE_FLAG " = 1 "     \
     "WHERE " LEASE_POOL_ID " = %d;"
 
 typedef struct

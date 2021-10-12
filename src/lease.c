@@ -129,6 +129,11 @@ dhcpLeaseIpAddress (dhcpLeasePoolResult_t lease)
   if (db == NULL)
     return false;
 
+  sprintf (sql, DHCP_LEASE_RESERVE_ADDRESS_FORMAT_STRING, lease.mac, lease.host,
+           lease.id);
+
+  printf("\nsql : %s\n", sql);
+
   retval = sqlite3_exec (db, sql, NULL, NULL, NULL);
 
   flag = retval == SQLITE_OK;

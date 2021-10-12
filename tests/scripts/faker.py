@@ -124,6 +124,7 @@ class Faker():
     def __init__(self, conn: sqlite3.Connection, quiery: Queries) -> None:
         self.conn = conn
         self.qr = quiery
+        self.configCount = 5
 
     def createTables(self):
         self.qr.deleteAll(self.conn)
@@ -137,7 +138,7 @@ class Faker():
         return self
 
     def conf(self):
-        for i in range(1, 5):
+        for i in range(self.configCount):
             self.conn.execute(
                 self.qr.insertToConf(
                     "255.255.255." + str(5 * i),
@@ -167,7 +168,7 @@ class Faker():
                 self.qr.insertToPool(
                     lease_flag=lease_flag,
                     ip=ip, host=hostname,
-                    mac=mac, conf_id=RandNum(1, 5)
+                    mac=mac, conf_id=RandNum(1, self.configCount)
                 )
             )
 

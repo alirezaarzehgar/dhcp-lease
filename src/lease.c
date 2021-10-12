@@ -131,8 +131,6 @@ dhcpLeaseIpAddress (unsigned int id, const char *mac, const char *host)
 
   sprintf (sql, DHCP_LEASE_RESERVE_ADDRESS_FORMAT_STRING, mac, host, id);
 
-  printf ("\nsql : %s\n", sql);
-
   retval = sqlite3_exec (db, sql, NULL, NULL, NULL);
 
   flag = retval == SQLITE_OK;

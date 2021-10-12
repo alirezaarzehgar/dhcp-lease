@@ -117,7 +117,7 @@ dhcpLeaseGetIpFromPool()
 }
 
 bool
-dhcpLeaseIpAddress (dhcpLeasePoolResult_t lease)
+dhcpLeaseIpAddress (unsigned int id, const char *mac, const char *host)
 {
   int retval;
 
@@ -126,13 +126,12 @@ dhcpLeaseIpAddress (dhcpLeasePoolResult_t lease)
 
   int flag = false;
 
-  if (db == NULL)
+  if (db == NULL || id == 0 || strlen (mac) == 0 || strlen (host) == 0)
     return false;
 
-  sprintf (sql, DHCP_LEASE_RESERVE_ADDRESS_FORMAT_STRING, lease.mac, lease.host,
-           lease.id);
+  sprintf (sql, DHCP_LEASE_RESERVE_ADDRESS_FORMAT_STRING, mac, host, id);
 
-  printf("\nsql : %s\n", sql);
+  printf ("\nsql : %s\n", sql);
 
   retval = sqlite3_exec (db, sql, NULL, NULL, NULL);
 

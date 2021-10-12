@@ -62,7 +62,7 @@ dhcpLeaseIpAddressTest()
 
   lease = dhcpLeaseGetIpFromPool();
 
-  retval = dhcpLeaseIpAddress (lease);
+  retval = dhcpLeaseIpAddress (lease.id, "52:54:00:87:db:5f", "ali");
 
   dhcpLeaseClose();
 

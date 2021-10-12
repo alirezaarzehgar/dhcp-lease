@@ -124,12 +124,19 @@ dhcpLeaseIpAddress (unsigned int id, const char *mac, const char *host)
   char sql[strlen (DHCP_LEASE_RESERVE_ADDRESS_FORMAT_STRING) +
                   DHCP_LEASE_MAC_STR_MAX_LEN + DHCP_LEASE_HOSTNAME_STR_MAX_LEN];
 
+  char hostField[DHCP_LEASE_HOSTNAME_STR_MAX_LEN + 2];
+
   int flag = false;
 
-  if (db == NULL || id == 0 || strlen (mac) == 0 || strlen (host) == 0)
+  if (db == NULL || id == 0 || strlen (mac) == 0)
     return false;
 
-  sprintf (sql, DHCP_LEASE_RESERVE_ADDRESS_FORMAT_STRING, mac, host, id);
+  if (strlen (host) > 0)
+    sprintf (hostField, "\"%s\"", host);
+  else
+    sprintf (hostField, "NULL");
+
+  sprintf (sql, DHCP_LEASE_RESERVE_ADDRESS_FORMAT_STRING, mac, hostField, id);
 
   retval = sqlite3_exec (db, sql, NULL, NULL, NULL);
 

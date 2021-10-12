@@ -11,9 +11,34 @@
 
 #include "lease/lease.h"
 
-dhcpLeaseConfigResult_t
-dhcpLeaseGetConfigById (sqlite3 *db, unsigned int id)
+static sqlite3 *db = NULL;
+
+int
+dhcpLeaseInit (const char *path)
 {
+  int retval;
+
+  retval = sqlite3_open (path, &db);
+
+  if (retval != SQLITE_OK)
+    return retval;
+}
+
+void
+dhcpLeaseClose()
+{
+  sqlite3_close (db);
+  db = NULL;
+}
+
+dhcpLeaseConfigResult_t
+dhcpLeaseGetConfigById (unsigned int id)
+{
+  int retval;
+
+  dhcpLeaseConfigResult_t config;
+
+  char sql[strlen (DHCP_LEASE_GET_CONFIG_BY_ID_FORMAT_STRING) + 5];
 
   int
   callback (void *config, int argc, char **argv, char **col)
@@ -33,21 +58,16 @@ dhcpLeaseGetConfigById (sqlite3 *db, unsigned int id)
     return SQLITE_OK;
   }
 
-  int retval;
-
-  dhcpLeaseConfigResult_t config;
-
-  char *errMsg = malloc (12);
-
-  char sql[strlen (DHCP_LEASE_GET_CONFIG_BY_ID_FORMAT_STRING) + 5];
-
   bzero (&config, sizeof (dhcpLeaseConfigResult_t));
 
   bzero (&sql, sizeof (sql));
 
+  if (db == NULL)
+    return config;
+
   sprintf (sql, DHCP_LEASE_GET_CONFIG_BY_ID_FORMAT_STRING, id);
 
-  retval = sqlite3_exec (db, sql, callback, &config, &errMsg);
+  retval = sqlite3_exec (db, sql, callback, &config, NULL);
 
   if (retval != SQLITE_OK)
     bzero (&config, sizeof (dhcpLeaseConfigResult_t));
@@ -56,10 +76,8 @@ dhcpLeaseGetConfigById (sqlite3 *db, unsigned int id)
 }
 
 dhcpLeasePoolResult_t
-dhcpLeaseGetIpFromPool (const char *dbpath)
+dhcpLeaseGetIpFromPool()
 {
-  sqlite3 *db;
-
   unsigned int retval;
 
   dhcpLeasePoolResult_t lease;
@@ -75,7 +93,7 @@ dhcpLeaseGetIpFromPool (const char *dbpath)
 
     localLease->id = atoi (argv[0]);
 
-    localLease->config = dhcpLeaseGetConfigById (db, id);
+    localLease->config = dhcpLeaseGetConfigById (id);
 
     strncpy (localLease->ip, argv[2], DHCP_LEASE_IP_STR_LEN);
 
@@ -86,9 +104,7 @@ dhcpLeaseGetIpFromPool (const char *dbpath)
 
   bzero (&lease, sizeof (dhcpLeasePoolResult_t));
 
-  retval = sqlite3_open (dbpath, &db);
-
-  if (retval != SQLITE_OK)
+  if (db == NULL)
     return lease;
 
   retval = sqlite3_exec (db, DHCP_LEASE_GET_NON_RESERVED_IP, callback, &lease,
@@ -97,13 +113,12 @@ dhcpLeaseGetIpFromPool (const char *dbpath)
   if (retval != SQLITE_OK)
     bzero (&lease, sizeof (dhcpLeasePoolResult_t));
 
-  sqlite3_close (db);
-
   return lease;
 }
 
 bool
 dhcpLeaseIpAddress (dhcpLeasePoolResult_t lease)
 {
-  /* TODO */
+  int retval;
+
 }

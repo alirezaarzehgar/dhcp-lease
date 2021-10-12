@@ -30,7 +30,11 @@ dhcpLeaseGetIpFromPoolTest()
 
   bzero (&lease, sizeof (dhcpLeasePoolResult_t));
 
-  lease = dhcpLeaseGetIpFromPool (FAKE_DATABASE_PATH);
+  dhcpLeaseInit(FAKE_DATABASE_PATH);
+
+  lease = dhcpLeaseGetIpFromPool ();
+
+  dhcpLeaseClose();
 
   printf ("\n\nlease :\n\tid -> %d\n\tip -> %s\n\n", lease.id, lease.ip);
 

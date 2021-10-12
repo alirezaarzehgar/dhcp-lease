@@ -167,7 +167,7 @@ class Faker():
                 self.qr.insertToPool(
                     lease_flag=lease_flag,
                     ip=ip, host=hostname,
-                    mac=mac, conf_id=RandNum(0, 5)
+                    mac=mac, conf_id=RandNum(1, 5)
                 )
             )
 

@@ -17,24 +17,32 @@
 #define DHCP_LEASE_HOSTNAME_STR_MAX_LEN         253     /* en.wikipedia.org/wiki/Hostname */
 #define DHCP_LEASE_MAC_STR_MAX_LEN              17
 
-#define DHCP_LEASE_GET_NON_RESERVED_IP          \
-    "SELECT " \
-          LEASE_POOL_ID ", " \
-          LEASE_POOL_CONFIG_ID ", " \
-          LEASE_POOL_IP " " \
+#define DHCP_LEASE_GET_NON_RESERVED_IP      \
+    "SELECT "     \
+          LEASE_POOL_ID ", "      \
+          LEASE_POOL_CONFIG_ID ", "     \
+          LEASE_POOL_IP " "     \
     "FROM " LEASE_POOL_TABLE_NAME " WHERE " LEASE_POOL_LEASE_FLAG " = 0 LIMIT 1;"
 
 #define DHCP_LEASE_GET_CONFIG_BY_ID_FORMAT_STRING     \
-    "SELECT " \
+    "SELECT "     \
     LEASE_CONFIG_FIELD_ID ", "      \
     LEASE_CONFIG_MASK ", "      \
     LEASE_CONFIG_ROUTER ", "      \
     LEASE_CONFIG_DOMAIN ", "      \
-    LEASE_CONFIG_LEASE_TIME " "   \
-    "FROM " LEASE_CONFIG_TABLE_NAME " WHERE "    \
-    LEASE_CONFIG_FIELD_ID " = ("  \
-      "SELECT " LEASE_CONFIG_FIELD_ID " FROM " LEASE_POOL_TABLE_NAME " WHERE id = %d"  \
+    LEASE_CONFIG_LEASE_TIME " "     \
+    "FROM " LEASE_CONFIG_TABLE_NAME " WHERE "     \
+    LEASE_CONFIG_FIELD_ID " = ("      \
+      "SELECT " LEASE_CONFIG_FIELD_ID " FROM " LEASE_POOL_TABLE_NAME " WHERE id = %d"     \
     ");"
+
+#define DHCP_LEASE_RESERVE_MAC_ADDRESS_FORMAT_STRING      \
+    "UPDATE "       \
+    LEASE_POOL_TABLE_NAME " "   \
+    "SET "          \
+    LEASE_POOL_MAC " = %s, "    \
+    LEASE_POOL_HOST " = %s "    \
+    "WHERE " LEASE_POOL_ID " = %d;"
 
 typedef struct
 {
@@ -66,9 +74,13 @@ typedef struct
 
 } dhcpLeasePoolResult_t;
 
-dhcpLeaseConfigResult_t dhcpLeaseGetConfigById(sqlite3 *db, unsigned int id);
+int dhcpLeaseInit (const char *path);
 
-dhcpLeasePoolResult_t dhcpLeaseGetIpFromPool (const char *dbpath);
+void dhcpLeaseClose();
+
+dhcpLeaseConfigResult_t dhcpLeaseGetConfigById (unsigned int id);
+
+dhcpLeasePoolResult_t dhcpLeaseGetIpFromPool ();
 
 bool dhcpLeaseIpAddress (dhcpLeasePoolResult_t lease);
 

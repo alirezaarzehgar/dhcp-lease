@@ -3,7 +3,7 @@ import sqlite3
 import pathlib
 from typing import Any
 from scapy.all import RandMAC
-from scapy.volatile import RandIP, RandNum, RandString
+from scapy.volatile import RandChoice, RandIP, RandNum, RandString
 
 
 class Queries():
@@ -153,21 +153,24 @@ class Faker():
 
     def pool(self):
         for i in range(15):
+            lease_flag = 0
             ip = "192.168.133." + str(i + 1)
             hostname = None
             mac = None
             
-            if i % 2 == 1:
+            if RandNum(0, 6) <= 3:
                 hostname = str(RandString(7))
                 mac = str(RandMAC())
+                lease_flag = 1
                 
             self.conn.execute(
                 self.qr.insertToPool(
-                    (i % 5) + 1, ip,
-                    hostname, mac,
-                    i % 2
+                    lease_flag=lease_flag,
+                    ip=ip, host=hostname,
+                    mac=mac, conf_id=RandNum(0, 5)
                 )
             )
+
 
         self.conn.commit()
 

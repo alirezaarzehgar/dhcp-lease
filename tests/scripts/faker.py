@@ -142,10 +142,10 @@ class Faker():
         for i in range(self.configCount):
             self.conn.execute(
                 self.qr.insertToConf(
-                    "255.255.255.255",
-                    "192.168.1." + str(i * 8),
-                    str(RandString(5)) + ".example.com",
-                    600
+                    mask="255.255.255.0",
+                    router="192.168.1." + str(i * 8),
+                    domain=str(RandString(5)) + ".example.com",
+                    lease_time=600
                 )
             )
 

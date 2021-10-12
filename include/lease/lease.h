@@ -66,7 +66,7 @@ typedef struct
 
 } dhcpLeasePoolResult_t;
 
-dhcpLeaseConfigResult_t dhcpLeaseGetConfigById(sqlite3 *db, unsigned int id);
+dhcpLeaseConfigResult_t dhcpLeaseGetConfigById (sqlite3 *db, unsigned int id);
 
 dhcpLeasePoolResult_t dhcpLeaseGetIpFromPool (const char *dbpath);
 

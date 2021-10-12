@@ -28,7 +28,7 @@ dhcpLeaseGetIpFromPoolTest()
 {
   dhcpLeasePoolResult_t lease;
 
-  bzero(&lease, sizeof(dhcpLeasePoolResult_t));
+  bzero (&lease, sizeof (dhcpLeasePoolResult_t));
 
   lease = dhcpLeaseGetIpFromPool (FAKE_DATABASE_PATH);
 
@@ -39,7 +39,8 @@ dhcpLeaseGetIpFromPoolTest()
           "\tmask -> %s\n"
           "\trouter -> %s\n"
           "\tdomain -> %s \n"
-          "\tlease_time -> %d\n", lease.config.id, lease.config.mask, lease.config.router,
+          "\tlease_time -> %d\n", lease.config.id, lease.config.mask,
+          lease.config.router,
           lease.config.domain, lease.config.lease_time);
 
   printf ("\n\n");

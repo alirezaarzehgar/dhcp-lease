@@ -2,7 +2,7 @@
  * @file lease.c
  * @author alirezaarzehgar (alirezaarzehgar82@gmail.com)
  * @brief
- * @version 0.1
+ * @version 0.1.1
  * @date 2021-10-10
  *
  * @copyright Copyright (c) 2021
@@ -11,7 +11,7 @@
 
 /**
  * @@@@@@@@@@@   Important Note    @@@@@@@@@@@
- * 
+ *
  * This code just running and is very very shit code.
  * We should refactor it and improve it's clean code.
  */
@@ -27,8 +27,11 @@ dhcpLeaseInit (const char *path)
 
   retval = sqlite3_open (path, &db);
 
-  if (retval != SQLITE_OK)
+  if (retval == SQLITE_OK)
     return retval;
+
+  else
+    return SQLITE_ERROR;
 }
 
 void
@@ -58,14 +61,14 @@ dhcpLeaseMacAddressAlreadyExists (char *mac)
   }
 
   if (db == NULL)
-    return -1;
+    return SQLITE_ERROR;
 
   sprintf (sql, DHCP_LEASE_FIND_ID_BY_MAC_FORMAT_STRING, mac);
 
   retval = sqlite3_exec (db, sql, callback, &count, NULL);
 
   if (retval != SQLITE_OK)
-    return -1;
+    return SQLITE_ERROR;
 
   return count;
 }

@@ -29,6 +29,8 @@ dhcpLeaseInit (const char *path)
 
   if (retval != SQLITE_OK)
     return retval;
+
+  return true;
 }
 
 void

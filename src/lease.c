@@ -213,27 +213,29 @@ dhcpLeaseIpAddress (unsigned int id, const char *mac, const char *host)
 }
 
 bool
-dhcpLeaseInitHelper (bool (*callback) (void *, char *), void *tbl)
+dhcpLeaseInitPool()
 {
   int retval;
 
   char sql[MAX_QUERY_LEN];
 
-  callback (tbl, sql);
+  dhcpLeaseSqlBuilderInitPoolTable (PoolTbl, sql);
 
-  retavl = sqlite3_exec (db, sql, NULL, NULL, NULL);
+  retval = sqlite3_exec (db, sql, NULL, NULL, NULL);
 
   return retval == SQLITE_OK;
 }
 
 bool
-dhcpLeaseInitPool()
-{
-  return dhcpLeaseInitHelper (dhcpLeaseSqlBuilderInitPoolTable, PoolTbl);
-}
-
-bool
 dhcpLeaseInitConf()
 {
-  return dhcpLeaseInitHelper (dhcpLeaseSqlBuilderInitConfTable, configTbl);
+  int retval;
+
+  char sql[MAX_QUERY_LEN];
+
+  dhcpLeaseSqlBuilderInitConfTable (ConfigTbl, sql);
+
+  retval = sqlite3_exec (db, sql, NULL, NULL, NULL);
+
+  return retval == SQLITE_OK;
 }

@@ -70,3 +70,17 @@ dhcpLeaseIpAddressTest()
 
   CU_ASSERT_TRUE (retval);
 }
+
+void
+dhcpLeaseInitConfTest()
+{
+  dhcpLeaseInit ("test.db");
+  dhcpLeaseInitConf();
+}
+
+void
+dhcpLeaseInitPoolTest()
+{
+  dhcpLeaseInitPool();
+  dhcpLeaseClose();
+}

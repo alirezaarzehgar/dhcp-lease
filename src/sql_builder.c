@@ -141,13 +141,13 @@ dhcpLeaseSqlBuilderLeaseIp (struct poolTbl tbl, char *sqlPtr, char *mac,
 void
 dhcpLeaseSqlBuilderInitConfTable (struct configTbl tbl, char *sqlPtr)
 {
-  char format[] = "CREATE TABLE %s ("
-                  "%s INTEGER PRIMARY KEY AUTOINCREMENT, "
-                  "%s TEXT NOT NULL, "
-                  "%s TEXT NOT NULL, "
-                  "%s TEXT NOT NULL, "
-                  "%s INTEGER NOT NULL DEFAULT 600"
-                  ");";
+  char format[] = "CREATE TABLE %s (\n"
+                  "   %s INTEGER PRIMARY KEY AUTOINCREMENT,\n"
+                  "   %s TEXT NOT NULL,\n"
+                  "   %s TEXT NOT NULL,\n"
+                  "   %s TEXT NOT NULL,\n"
+                  "   %s INTEGER NOT NULL DEFAULT 600\n"
+                  ");\n\n";
 
   char *sql = malloc (
                 L (format)
@@ -170,15 +170,15 @@ dhcpLeaseSqlBuilderInitConfTable (struct configTbl tbl, char *sqlPtr)
 void
 dhcpLeaseSqlBuilderInitPoolTable (struct poolTbl tbl, char *sqlPtr)
 {
-  char format[] = "CREATE TABLE %s ("
-                  "%s INTEGER PRIMARY KEY AUTOINCREMENT, "
-                  "%s INTEGER NOT NULL, "
-                  "%s TEXT NOT NULL, "
-                  "%s TEXT, "
-                  "%s TEXT, "
-                  "%s INTEGER NOT NULL DEFAULT 0, "
-                  "FOREIGN KEY (conf_id) REFERENCES config(id)"
-                  ");";
+  char format[] = "CREATE TABLE %s (\n"
+                  "   %s INTEGER PRIMARY KEY AUTOINCREMENT,\n"
+                  "   %s INTEGER NOT NULL,\n"
+                  "   %s TEXT NOT NULL,\n"
+                  "   %s TEXT,\n"
+                  "   %s TEXT,\n"
+                  "   %s INTEGER NOT NULL DEFAULT 0,\n"
+                  "   FOREIGN KEY (conf_id) REFERENCES config(id)\n"
+                  ");\n\n";
 
   char *sql = malloc (
                 L (format)

@@ -11,12 +11,13 @@
 
 /**
  * @@@@@@@@@@@   Important Note    @@@@@@@@@@@
- * 
+ *
  * This code just running and is very very shit code.
  * We should refactor it and improve it's clean code.
  */
 
 #include "lease/lease.h"
+#include "lease/sql_builder.h"
 
 static sqlite3 *db = NULL;
 
@@ -47,7 +48,7 @@ dhcpLeaseMacAddressAlreadyExists (char *mac)
 
   int count = 0;
 
-  char sql[160];
+  char sql[MAX_QUERY_LEN];
 
   int
   callback (void *countPtr, int argc, char **argv, char **col)
@@ -62,7 +63,7 @@ dhcpLeaseMacAddressAlreadyExists (char *mac)
   if (db == NULL)
     return -1;
 
-  sprintf (sql, DHCP_LEASE_FIND_ID_BY_MAC_FORMAT_STRING, mac);
+  dhcpLeaseSqlBuilderFindIdByMac (PoolTbl, sql, mac);
 
   retval = sqlite3_exec (db, sql, callback, &count, NULL);
 
@@ -79,7 +80,7 @@ dhcpLeaseGetPoolById (unsigned int id)
 
   dhcpLeasePoolResult_t pool;
 
-  char sql[strlen (DHCP_LEASE_GET_POOL_BY_ID_FORMAT_STRING) + 5];
+  char sql[MAX_QUERY_LEN];
 
   int
   callback (void *lease, int argc, char **argv, char **col)
@@ -97,12 +98,10 @@ dhcpLeaseGetPoolById (unsigned int id)
 
   bzero (&pool, sizeof (dhcpLeaseConfigResult_t));
 
-  bzero (&sql, sizeof (sql));
-
   if (db == NULL)
     return pool;
 
-  sprintf (sql, DHCP_LEASE_GET_POOL_BY_ID_FORMAT_STRING, id);
+  dhcpLeaseSqlBuilderGetLeaseById (PoolTbl, sql, id);
 
   retval = sqlite3_exec (db, sql, callback, &pool, NULL);
 

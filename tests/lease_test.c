@@ -12,7 +12,7 @@
 #include "lease_test.h"
 #include <CUnit/CUnit.h>
 
-#define CLIENT_MAC_ADDERSS "ab:aa:14:4f:64:5d"
+#define CLIENT_MAC_ADDERSS "d3:f2:76:d0:a4:0f"
 
 int
 initSuiteLease()

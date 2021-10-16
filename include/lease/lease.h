@@ -75,4 +75,8 @@ dhcpLeasePoolResult_t dhcpLeaseGetIpFromPool (char *mac);
 
 bool dhcpLeaseIpAddress (unsigned int id, const char *mac, const char *host);
 
+bool dhcpLeaseInitPool();
+
+bool dhcpLeaseInitConf();
+
 #endif // LEASE_H

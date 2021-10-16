@@ -211,3 +211,29 @@ dhcpLeaseIpAddress (unsigned int id, const char *mac, const char *host)
 
   return flag;
 }
+
+bool
+dhcpLeaseInitHelper (bool (*callback) (void *, char *), void *tbl)
+{
+  int retval;
+
+  char sql[MAX_QUERY_LEN];
+
+  callback (tbl, sql);
+
+  retavl = sqlite3_exec (db, sql, NULL, NULL, NULL);
+
+  return retval == SQLITE_OK;
+}
+
+bool
+dhcpLeaseInitPool()
+{
+  return dhcpLeaseInitHelper (dhcpLeaseSqlBuilderInitPoolTable, PoolTbl);
+}
+
+bool
+dhcpLeaseInitConf()
+{
+  return dhcpLeaseInitHelper (dhcpLeaseSqlBuilderInitConfTable, configTbl);
+}

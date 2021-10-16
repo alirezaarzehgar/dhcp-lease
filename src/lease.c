@@ -9,13 +9,6 @@
  *
  */
 
-/**
- * @@@@@@@@@@@   Important Note    @@@@@@@@@@@
- *
- * This code just running and is very very shit code.
- * We should refactor it and improve it's clean code.
- */
-
 #include "lease/lease.h"
 #include "lease/sql_builder.h"
 

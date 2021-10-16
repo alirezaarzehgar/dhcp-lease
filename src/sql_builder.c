@@ -166,3 +166,35 @@ dhcpLeaseSqlBuilderInitConfTable (struct configTbl tbl, char *sqlPtr)
 
   free (sql);
 }
+
+void
+dhcpLeaseSqlBuilderInitPoolTable (struct poolTbl tbl, char *sqlPtr)
+{
+  char format[] = "CREATE TABLE %s ("
+                  "%s INTEGER PRIMARY KEY AUTOINCREMENT, "
+                  "%s INTEGER NOT NULL, "
+                  "%s TEXT NOT NULL, "
+                  "%s TEXT, "
+                  "%s TEXT, "
+                  "%s INTEGER NOT NULL DEFAULT 0, "
+                  "FOREIGN KEY (conf_id) REFERENCES config(id)"
+                  ");";
+
+  char *sql = malloc (
+                L (format)
+                + L (tbl.name)
+                + L (tbl.id)
+                + L (tbl.conf_id)
+                + L (tbl.ip)
+                + L (tbl.host)
+                + L (tbl.mac)
+                + L (tbl.lease_flag)
+              );
+
+  sprintf (sql, format, tbl.name, tbl.id, tbl.conf_id, tbl.ip, tbl.host, tbl.mac,
+           tbl.lease_flag);
+
+  memcpy (sqlPtr, sql, MAX_QUERY_LEN);
+
+  free (sql);
+}

@@ -17,33 +17,21 @@
 #define DHCP_LEASE_HOSTNAME_STR_MAX_LEN         253     /* en.wikipedia.org/wiki/Hostname */
 #define DHCP_LEASE_MAC_STR_MAX_LEN              17
 
-#define DHCP_LEASE_GET_NON_RESERVED_IP      \
-    "SELECT "     \
-          LEASE_POOL_ID ", "      \
-          LEASE_POOL_CONFIG_ID ", "     \
-          LEASE_POOL_IP " "     \
-    "FROM " LEASE_POOL_TABLE_NAME " WHERE " LEASE_POOL_LEASE_FLAG " = 0 LIMIT 1;"
+#define DHCP_LEASE_COUNT_TO_ZERO                0
 
-#define DHCP_LEASE_GET_CONFIG_BY_ID_FORMAT_STRING     \
-    "SELECT "     \
-    LEASE_CONFIG_FIELD_ID ", "      \
-    LEASE_CONFIG_MASK ", "      \
-    LEASE_CONFIG_ROUTER ", "      \
-    LEASE_CONFIG_DOMAIN ", "      \
-    LEASE_CONFIG_LEASE_TIME " "     \
-    "FROM " LEASE_CONFIG_TABLE_NAME " WHERE "     \
-    LEASE_CONFIG_FIELD_ID " = ("      \
-      "SELECT " LEASE_CONFIG_FIELD_ID " FROM " LEASE_POOL_TABLE_NAME " WHERE id = %d"     \
-    ");"
+#define DHCP_LEASE_SQLITE_FAILURE(retval, valueForReturn) do { \
+    if (retval != SQLITE_OK)  \
+    return valueForReturn;  \
+} while(0);
 
-#define DHCP_LEASE_RESERVE_ADDRESS_FORMAT_STRING      \
-    "UPDATE "       \
-    LEASE_POOL_TABLE_NAME " "   \
-    "SET "          \
-    LEASE_POOL_MAC " = \"%s\", "    \
-    LEASE_POOL_HOST " = \"%s\", "    \
-    LEASE_POOL_LEASE_FLAG " = 1 "     \
-    "WHERE " LEASE_POOL_ID " = %d;"
+#define DHCP_LEASE_DECLARE_AS_NULL(type, name)  \
+  type    name;   \
+  bzero (&name, sizeof (type))
+
+#define DHCP_LEASE_CHECK_FOR_INIT(db, valueForReturn)   \
+  if (db == NULL)   \
+    return valueForReturn;
+
 
 typedef struct
 {
@@ -79,10 +67,16 @@ int dhcpLeaseInit (const char *path);
 
 void dhcpLeaseClose();
 
+int dhcpLeaseMacAddressAlreadyExists (char *mac);
+
 dhcpLeaseConfigResult_t dhcpLeaseGetConfigById (unsigned int id);
 
-dhcpLeasePoolResult_t dhcpLeaseGetIpFromPool ();
+dhcpLeasePoolResult_t dhcpLeaseGetIpFromPool (char *mac);
 
 bool dhcpLeaseIpAddress (unsigned int id, const char *mac, const char *host);
+
+bool dhcpLeaseInitPool();
+
+bool dhcpLeaseInitConf();
 
 #endif // LEASE_H

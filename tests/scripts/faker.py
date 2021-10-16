@@ -4,6 +4,7 @@ import pathlib
 from typing import Any
 from scapy.all import RandMAC
 from scapy.volatile import RandChoice, RandIP, RandNum, RandString
+import random
 
 
 class Queries():
@@ -141,10 +142,10 @@ class Faker():
         for i in range(self.configCount):
             self.conn.execute(
                 self.qr.insertToConf(
-                    "255.255.255." + str(5 * i),
-                    "192.168.1." + str(i * 8),
-                    str(RandString(5)) + ".example.com",
-                    600
+                    mask="255.255.255.0",
+                    router="192.168.1." + str(i * 8),
+                    domain=str(RandString(5)) + ".example.com",
+                    lease_time=600
                 )
             )
 
@@ -153,7 +154,7 @@ class Faker():
         return self
 
     def pool(self):
-        for i in range(15):
+        for i in range(200):
             lease_flag = 0
             ip = "192.168.133." + str(i + 1)
             hostname = None

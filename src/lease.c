@@ -10,6 +10,7 @@
  */
 
 #include "lease/lease.h"
+#include "lease/sql_builder.h"
 
 static sqlite3 *db = NULL;
 
@@ -20,8 +21,9 @@ dhcpLeaseInit (const char *path)
 
   retval = sqlite3_open (path, &db);
 
-  if (retval != SQLITE_OK)
-    return retval;
+  DHCP_LEASE_SQLITE_FAILURE (retval, false);
+
+  return true;
 }
 
 void
@@ -31,6 +33,72 @@ dhcpLeaseClose()
   db = NULL;
 }
 
+int
+dhcpLeaseMacAddressAlreadyExists (char *mac)
+{
+  int retval;
+
+  int count = 0;
+
+  char sql[MAX_QUERY_LEN];
+
+  DHCP_LEASE_CHECK_FOR_INIT (db, DHCP_LEASE_COUNT_TO_ZERO);
+
+  int
+  callback (void *countPtr, int argc, char **argv, char **col)
+  {
+    int *count = (int *)countPtr;
+
+    *count = atoi (argv[0]);
+
+    return SQLITE_OK;
+  }
+
+  dhcpLeaseSqlBuilderFindIdByMac (PoolTbl, sql, mac);
+
+  retval = sqlite3_exec (db, sql, callback, &count, NULL);
+
+  DHCP_LEASE_SQLITE_FAILURE (retval, DHCP_LEASE_COUNT_TO_ZERO);
+
+  return count;
+}
+
+dhcpLeasePoolResult_t
+dhcpLeaseGetPoolById (unsigned int id)
+{
+  int retval;
+
+  dhcpLeasePoolResult_t pool;
+
+  DHCP_LEASE_DECLARE_AS_NULL (dhcpLeasePoolResult_t, nullPool);
+
+  char sql[MAX_QUERY_LEN];
+
+  DHCP_LEASE_CHECK_FOR_INIT (db, nullPool);
+
+  int
+  callback (void *lease, int argc, char **argv, char **col)
+  {
+    dhcpLeasePoolResult_t *localLease = (dhcpLeasePoolResult_t *)lease;
+
+    localLease->id = atoi (argv[0]);
+
+    localLease->config = dhcpLeaseGetConfigById (atoi (argv[1]));
+
+    strncpy (localLease->ip, argv[2], DHCP_LEASE_IP_STR_LEN);
+
+    return SQLITE_OK;
+  }
+
+  dhcpLeaseSqlBuilderGetLeaseById (PoolTbl, sql, id);
+
+  retval = sqlite3_exec (db, sql, callback, &pool, NULL);
+
+  DHCP_LEASE_SQLITE_FAILURE (retval, nullPool);
+
+  return pool;
+}
+
 dhcpLeaseConfigResult_t
 dhcpLeaseGetConfigById (unsigned int id)
 {
@@ -38,7 +106,11 @@ dhcpLeaseGetConfigById (unsigned int id)
 
   dhcpLeaseConfigResult_t config;
 
-  char sql[strlen (DHCP_LEASE_GET_CONFIG_BY_ID_FORMAT_STRING) + 5];
+  DHCP_LEASE_DECLARE_AS_NULL (dhcpLeaseConfigResult_t, nullConfig);
+
+  char sql[MAX_QUERY_LEN];
+
+  DHCP_LEASE_CHECK_FOR_INIT (db, nullConfig);
 
   int
   callback (void *config, int argc, char **argv, char **col)
@@ -58,29 +130,29 @@ dhcpLeaseGetConfigById (unsigned int id)
     return SQLITE_OK;
   }
 
-  bzero (&config, sizeof (dhcpLeaseConfigResult_t));
-
   bzero (&sql, sizeof (sql));
 
-  if (db == NULL)
-    return config;
-
-  sprintf (sql, DHCP_LEASE_GET_CONFIG_BY_ID_FORMAT_STRING, id);
+  dhcpLeaseSqlBuilderGetConfigById (ConfigTbl, PoolTbl, sql, id);
 
   retval = sqlite3_exec (db, sql, callback, &config, NULL);
 
-  if (retval != SQLITE_OK)
-    bzero (&config, sizeof (dhcpLeaseConfigResult_t));
+  DHCP_LEASE_SQLITE_FAILURE (retval, nullConfig);
 
   return config;
 }
 
 dhcpLeasePoolResult_t
-dhcpLeaseGetIpFromPool()
+dhcpLeaseGetIpFromPool (char *mac)
 {
   unsigned int retval;
 
   dhcpLeasePoolResult_t lease;
+
+  DHCP_LEASE_DECLARE_AS_NULL (dhcpLeasePoolResult_t, nullLease);
+
+  char sql[MAX_QUERY_LEN];
+
+  DHCP_LEASE_CHECK_FOR_INIT (db, nullLease);
 
   int
   callback (void *lease, int argc, char **argv, char **col)
@@ -102,16 +174,17 @@ dhcpLeaseGetIpFromPool()
     return SQLITE_OK;
   }
 
-  bzero (&lease, sizeof (dhcpLeasePoolResult_t));
+  if ((retval = dhcpLeaseMacAddressAlreadyExists (mac)) >
+      DHCP_LEASE_COUNT_TO_ZERO)
+    lease = dhcpLeaseGetPoolById (retval);
+  else
+    {
+      dhcpLeaseSqlBuilderGetNonLeasedIp (PoolTbl, sql);
 
-  if (db == NULL)
-    return lease;
+      retval = sqlite3_exec (db, sql, callback, &lease, NULL);
 
-  retval = sqlite3_exec (db, DHCP_LEASE_GET_NON_RESERVED_IP, callback, &lease,
-                         NULL);
-
-  if (retval != SQLITE_OK)
-    bzero (&lease, sizeof (dhcpLeasePoolResult_t));
+      DHCP_LEASE_SQLITE_FAILURE (retval, nullLease);
+    }
 
   return lease;
 }
@@ -119,21 +192,50 @@ dhcpLeaseGetIpFromPool()
 bool
 dhcpLeaseIpAddress (unsigned int id, const char *mac, const char *host)
 {
+  DHCP_LEASE_CHECK_FOR_INIT (db, false);
+
   int retval;
 
-  char sql[strlen (DHCP_LEASE_RESERVE_ADDRESS_FORMAT_STRING) +
-                  DHCP_LEASE_MAC_STR_MAX_LEN + DHCP_LEASE_HOSTNAME_STR_MAX_LEN];
+  char sql[MAX_QUERY_LEN];
 
   int flag = false;
 
-  if (db == NULL || id == 0 || strlen (mac) == 0 || strlen (host) == 0)
+  if (id == 0 || strlen (mac) == 0)
     return false;
 
-  sprintf (sql, DHCP_LEASE_RESERVE_ADDRESS_FORMAT_STRING, mac, host, id);
+  dhcpLeaseSqlBuilderLeaseIp (PoolTbl, sql, (char *)mac, (char *)host, id);
 
   retval = sqlite3_exec (db, sql, NULL, NULL, NULL);
 
   flag = retval == SQLITE_OK;
 
   return flag;
+}
+
+bool
+dhcpLeaseInitPool()
+{
+  int retval;
+
+  char sql[MAX_QUERY_LEN];
+
+  dhcpLeaseSqlBuilderInitPoolTable (PoolTbl, sql);
+
+  retval = sqlite3_exec (db, sql, NULL, NULL, NULL);
+
+  return retval == SQLITE_OK;
+}
+
+bool
+dhcpLeaseInitConf()
+{
+  int retval;
+
+  char sql[MAX_QUERY_LEN];
+
+  dhcpLeaseSqlBuilderInitConfTable (ConfigTbl, sql);
+
+  retval = sqlite3_exec (db, sql, NULL, NULL, NULL);
+
+  return retval == SQLITE_OK;
 }

@@ -10,6 +10,8 @@ CU_TestInfo lease_tests[] =
 {
   {"dhcpLeaseGetIpFromPoolTest", dhcpLeaseGetIpFromPoolTest},
   {"dhcpLeaseIpAddressTest", dhcpLeaseIpAddressTest},
+  {"dhcpLeaseInitConfTest", dhcpLeaseInitConfTest},
+  {"dhcpLeaseInitPoolTest", dhcpLeaseInitPoolTest},
   CU_TEST_INFO_NULL,
 };
 

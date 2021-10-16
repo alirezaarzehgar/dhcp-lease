@@ -106,3 +106,23 @@ CREATE TABLE pool (
 | FOREIGN KEY   | (conf_id) REFERENCES config (id)      |
 ---------------------------------------------------------
 ```
+
+## resolve dependencies
+
+```
+pip3 install -r tests/scripts/requirements.txt
+```
+
+## build & run
+
+```
+mkdir build
+cd build
+cmake ..
+```
+
+### tests
+
+```
+./tests/lease_test
+```

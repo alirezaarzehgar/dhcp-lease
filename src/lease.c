@@ -118,7 +118,7 @@ dhcpLeaseGetConfigById (unsigned int id)
 
   dhcpLeaseConfigResult_t config;
 
-  char sql[strlen (DHCP_LEASE_GET_CONFIG_BY_ID_FORMAT_STRING) + 5];
+  char sql[MAX_QUERY_LEN];
 
   int
   callback (void *config, int argc, char **argv, char **col)
@@ -145,7 +145,7 @@ dhcpLeaseGetConfigById (unsigned int id)
   if (db == NULL)
     return config;
 
-  sprintf (sql, DHCP_LEASE_GET_CONFIG_BY_ID_FORMAT_STRING, id);
+  dhcpLeaseSqlBuilderGetConfigById (ConfigTbl, PoolTbl, sql, id);
 
   retval = sqlite3_exec (db, sql, callback, &config, NULL);
 

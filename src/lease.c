@@ -194,7 +194,6 @@ dhcpLeaseGetIpFromPool (char *mac)
   else
     {
       dhcpLeaseSqlBuilderGetNonLeasedIp (PoolTbl, sql);
-      printf ("%s\n", sql);
 
       retval = sqlite3_exec (db, sql, callback, &lease, NULL);
 

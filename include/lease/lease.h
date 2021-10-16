@@ -17,6 +17,13 @@
 #define DHCP_LEASE_HOSTNAME_STR_MAX_LEN         253     /* en.wikipedia.org/wiki/Hostname */
 #define DHCP_LEASE_MAC_STR_MAX_LEN              17
 
+#define DHCP_LEASE_COUNT_TO_ZERO                0
+
+#define DHCP_LEASE_SQLITE_FAILURE(retval, valueForReturn) do { \
+    if (retval != SQLITE_OK)  \
+    return valueForReturn;  \
+} while(0);
+
 typedef struct
 {
   unsigned int id;

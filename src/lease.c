@@ -28,8 +28,7 @@ dhcpLeaseInit (const char *path)
 
   retval = sqlite3_open (path, &db);
 
-  if (retval != SQLITE_OK)
-    return retval;
+  DHCP_LEASE_SQLITE_FAILURE (retval, false);
 
   return true;
 }
@@ -61,14 +60,13 @@ dhcpLeaseMacAddressAlreadyExists (char *mac)
   }
 
   if (db == NULL)
-    return -1;
+    return DHCP_LEASE_COUNT_TO_ZERO;
 
   dhcpLeaseSqlBuilderFindIdByMac (PoolTbl, sql, mac);
 
   retval = sqlite3_exec (db, sql, callback, &count, NULL);
 
-  if (retval != SQLITE_OK)
-    return -1;
+  DHCP_LEASE_SQLITE_FAILURE (retval, DHCP_LEASE_COUNT_TO_ZERO);
 
   return count;
 }
@@ -79,6 +77,10 @@ dhcpLeaseGetPoolById (unsigned int id)
   int retval;
 
   dhcpLeasePoolResult_t pool;
+
+  dhcpLeasePoolResult_t nullPool;
+
+  bzero (&nullPool, sizeof (dhcpLeaseConfigResult_t));
 
   char sql[MAX_QUERY_LEN];
 
@@ -96,17 +98,15 @@ dhcpLeaseGetPoolById (unsigned int id)
     return SQLITE_OK;
   }
 
-  bzero (&pool, sizeof (dhcpLeaseConfigResult_t));
-
   if (db == NULL)
-    return pool;
+    return nullPool;
 
   dhcpLeaseSqlBuilderGetLeaseById (PoolTbl, sql, id);
 
   retval = sqlite3_exec (db, sql, callback, &pool, NULL);
 
   if (retval != SQLITE_OK)
-    bzero (&pool, sizeof (dhcpLeasePoolResult_t));
+    return nullPool;
 
   return pool;
 }
@@ -189,7 +189,8 @@ dhcpLeaseGetIpFromPool (char *mac)
   if (db == NULL)
     return lease;
 
-  if ((retval = dhcpLeaseMacAddressAlreadyExists (mac)) > 0)
+  if ((retval = dhcpLeaseMacAddressAlreadyExists (mac)) >
+      DHCP_LEASE_COUNT_TO_ZERO)
     lease = dhcpLeaseGetPoolById (retval);
   else
     {

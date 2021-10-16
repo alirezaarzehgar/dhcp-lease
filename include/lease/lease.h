@@ -28,6 +28,11 @@
   type    name;   \
   bzero (&name, sizeof (type))
 
+#define DHCP_LEASE_CHECK_FOR_INIT(db, valueForReturn)   \
+  if (db == NULL)   \
+    return valueForReturn;
+
+
 typedef struct
 {
   unsigned int id;

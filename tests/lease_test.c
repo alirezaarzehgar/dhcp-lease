@@ -35,7 +35,7 @@ dhcpLeaseGetIpFromPoolTest()
 
   dhcpLeaseInit (FAKE_DATABASE_PATH);
 
-  lease = dhcpLeaseGetIpFromPool(CLIENT_MAC_ADDERSS);
+  lease = dhcpLeaseGetIpFromPool (CLIENT_MAC_ADDERSS);
 
   dhcpLeaseClose();
 
@@ -62,7 +62,7 @@ dhcpLeaseIpAddressTest()
 
   dhcpLeaseInit (FAKE_DATABASE_PATH);
 
-  lease = dhcpLeaseGetIpFromPool(CLIENT_MAC_ADDERSS);
+  lease = dhcpLeaseGetIpFromPool (CLIENT_MAC_ADDERSS);
 
   retval = dhcpLeaseIpAddress (lease.id, CLIENT_MAC_ADDERSS, "ali");
 

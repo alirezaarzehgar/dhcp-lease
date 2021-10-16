@@ -93,9 +93,11 @@ dhcpLeaseSqlBuilderGetNonLeasedIp (struct poolTbl tbl, char *sqlPtr)
                 + L (tbl.id)
                 + L (tbl.conf_id)
                 + L (tbl.ip)
+                + L (tbl.name)
+                + L (tbl.lease_flag)
               );
 
-  sprintf (sql, format, tbl.id, tbl.conf_id, tbl.ip);
+  sprintf (sql, format, tbl.id, tbl.conf_id, tbl.ip, tbl.name, tbl.lease_flag);
 
   memcpy (sqlPtr, sql, MAX_QUERY_LEN);
 

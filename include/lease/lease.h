@@ -24,26 +24,6 @@
           LEASE_POOL_IP " "     \
     "FROM " LEASE_POOL_TABLE_NAME " WHERE " LEASE_POOL_LEASE_FLAG " = 0 LIMIT 1;"
 
-#define DHCP_LEASE_GET_CONFIG_BY_ID_FORMAT_STRING     \
-    "SELECT "     \
-    LEASE_CONFIG_FIELD_ID ", "      \
-    LEASE_CONFIG_MASK ", "      \
-    LEASE_CONFIG_ROUTER ", "      \
-    LEASE_CONFIG_DOMAIN ", "      \
-    LEASE_CONFIG_LEASE_TIME " "     \
-    "FROM " LEASE_CONFIG_TABLE_NAME " WHERE "     \
-    LEASE_CONFIG_FIELD_ID " = ("      \
-      "SELECT " LEASE_CONFIG_FIELD_ID " FROM " LEASE_POOL_TABLE_NAME " WHERE id = %d"     \
-    ");"
-
-#define DHCP_LEASE_GET_POOL_BY_ID_FORMAT_STRING     \
-    "SELECT "     \
-    LEASE_POOL_ID ", "      \
-    LEASE_POOL_CONFIG_ID ", "     \
-    LEASE_POOL_IP " "     \
-    "FROM " LEASE_POOL_TABLE_NAME " WHERE "     \
-    LEASE_POOL_ID " = %d"
-
 #define DHCP_LEASE_RESERVE_ADDRESS_FORMAT_STRING      \
     "UPDATE "       \
     LEASE_POOL_TABLE_NAME " "   \
@@ -52,9 +32,6 @@
     LEASE_POOL_HOST " = %s, "    \
     LEASE_POOL_LEASE_FLAG " = 1 "     \
     "WHERE " LEASE_POOL_ID " = %d;"
-
-#define DHCP_LEASE_FIND_ID_BY_MAC_FORMAT_STRING       \
-  "SELECT " LEASE_POOL_ID " FROM " LEASE_POOL_TABLE_NAME " WHERE " LEASE_POOL_MAC " = \"%s\";"
 
 typedef struct
 {

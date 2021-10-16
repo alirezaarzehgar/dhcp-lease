@@ -45,6 +45,7 @@ if(NOT SQLITE_LIBRARY)
 endif()
 
 add_library(${PROJECT_NAME}
+    src/sql_builder.c
     src/lease.c
 )
 

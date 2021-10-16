@@ -209,22 +209,14 @@ dhcpLeaseIpAddress (unsigned int id, const char *mac, const char *host)
 {
   int retval;
 
-  char sql[strlen (DHCP_LEASE_RESERVE_ADDRESS_FORMAT_STRING) +
-                  DHCP_LEASE_MAC_STR_MAX_LEN + DHCP_LEASE_HOSTNAME_STR_MAX_LEN];
-
-  char hostField[DHCP_LEASE_HOSTNAME_STR_MAX_LEN + 2];
+  char sql[MAX_QUERY_LEN];
 
   int flag = false;
 
   if (db == NULL || id == 0 || strlen (mac) == 0)
     return false;
 
-  if (host == NULL)
-    strcpy (hostField, "NULL");
-  else
-    sprintf (hostField, "\"%s\"", host);
-
-  sprintf (sql, DHCP_LEASE_RESERVE_ADDRESS_FORMAT_STRING, mac, hostField, id);
+  dhcpLeaseSqlBuilderLeaseIp (PoolTbl, sql, (char *)mac, (char *)host, id);
 
   retval = sqlite3_exec (db, sql, NULL, NULL, NULL);
 

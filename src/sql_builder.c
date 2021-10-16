@@ -101,3 +101,37 @@ dhcpLeaseSqlBuilderGetNonLeasedIp (struct poolTbl tbl, char *sqlPtr)
 
   free (sql);
 }
+
+void
+dhcpLeaseSqlBuilderLeaseIp (struct poolTbl tbl, char *sqlPtr, char *mac,
+                            char *host, int id)
+{
+  char format[] = "UPDATE %s SET %s = \"%s\", %s = %s, %s = 1 WHERE %s = %d;";
+
+  /* +2 len for double qoutes for hostname ( "query" ) */
+  char hostField[DHCP_LEASE_HOSTNAME_STR_MAX_LEN + 2];
+
+  char *sql = (char *)malloc (
+                L (format)
+                + L (tbl.name)
+                + L (tbl.mac)
+                + DHCP_LEASE_MAC_STR_MAX_LEN + 2 /* +2 len for double qoutes ( "query" ) */
+                + L (tbl.host) + 2 /* +2 len for double qoutes ( "query" ) */
+                + DHCP_LEASE_HOSTNAME_STR_MAX_LEN
+                + 2 /* +2 len for double qoutes for hostname ( "query" ) */
+                + L (tbl.id)
+                + 9   /* 9 digit id */
+              );
+
+  if (host == NULL)
+    strcpy (hostField, "NULL");
+  else
+    sprintf (hostField, "\"%s\"", host);
+
+  sprintf (sql, format, tbl.name, tbl.mac, mac, tbl.host, hostField,
+           tbl.lease_flag, tbl.id, id);
+
+  memcpy (sqlPtr, sql, MAX_QUERY_LEN);
+
+  free (sql);
+}

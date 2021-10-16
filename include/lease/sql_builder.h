@@ -12,8 +12,12 @@
 #define L(var)                       strlen(var)
 
 void dhcpLeaseSqlBuilderFindIdByMac (struct poolTbl tbl, char *sqlPtr,
-                                      char *mac);
+                                     char *mac);
 
-void dhcpLeaseSqlBuilderGetLeaseById (struct poolTbl tbl, char *sqlPtr, int id);
+void dhcpLeaseSqlBuilderGetLeaseById (struct poolTbl tbl, char *sqlPtr,
+                                      int id);
+
+void dhcpLeaseSqlBuilderGetConfigById (struct configTbl ctbl,
+                                       struct poolTbl ptbl, char *sqlPtr, int id);
 
 #endif // LEASE_SQL_BUILDER_H

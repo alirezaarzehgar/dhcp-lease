@@ -20,4 +20,6 @@ void dhcpLeaseSqlBuilderGetLeaseById (struct poolTbl tbl, char *sqlPtr,
 void dhcpLeaseSqlBuilderGetConfigById (struct configTbl ctbl,
                                        struct poolTbl ptbl, char *sqlPtr, int id);
 
+void dhcpLeaseSqlBuilderGetNonLeasedIp (struct poolTbl tbl, char *sqlPtr);
+
 #endif // LEASE_SQL_BUILDER_H

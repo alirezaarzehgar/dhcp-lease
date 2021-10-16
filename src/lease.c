@@ -162,6 +162,8 @@ dhcpLeaseGetIpFromPool (char *mac)
 
   dhcpLeasePoolResult_t lease;
 
+  char sql[MAX_QUERY_LEN];
+
   int
   callback (void *lease, int argc, char **argv, char **col)
   {
@@ -191,8 +193,10 @@ dhcpLeaseGetIpFromPool (char *mac)
     lease = dhcpLeaseGetPoolById (retval);
   else
     {
-      retval = sqlite3_exec (db, DHCP_LEASE_GET_NON_RESERVED_IP, callback, &lease,
-                             NULL);
+      dhcpLeaseSqlBuilderGetNonLeasedIp (PoolTbl, sql);
+
+      retval = sqlite3_exec (db, sql, callback, &lease, NULL);
+
       if (retval != SQLITE_OK)
         bzero (&lease, sizeof (dhcpLeasePoolResult_t));
     }

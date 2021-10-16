@@ -82,3 +82,22 @@ dhcpLeaseSqlBuilderGetConfigById (struct configTbl ctbl, struct poolTbl ptbl,
 
   free (sql);
 }
+
+void
+dhcpLeaseSqlBuilderGetNonLeasedIp (struct poolTbl tbl, char *sqlPtr)
+{
+  char format[] = "SELECT %s, %s, %s FROM %s WHERE %s = 0 LIMIT 1;";
+
+  char *sql = (char *)malloc (
+                L (format)
+                + L (tbl.id)
+                + L (tbl.conf_id)
+                + L (tbl.ip)
+              );
+
+  sprintf (sql, format, tbl.id, tbl.conf_id, tbl.ip);
+
+  memcpy (sqlPtr, sql, MAX_QUERY_LEN);
+
+  free (sql);
+}

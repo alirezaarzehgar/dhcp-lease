@@ -17,13 +17,6 @@
 #define DHCP_LEASE_HOSTNAME_STR_MAX_LEN         253     /* en.wikipedia.org/wiki/Hostname */
 #define DHCP_LEASE_MAC_STR_MAX_LEN              17
 
-#define DHCP_LEASE_GET_NON_RESERVED_IP      \
-    "SELECT "     \
-          LEASE_POOL_ID ", "      \
-          LEASE_POOL_CONFIG_ID ", "     \
-          LEASE_POOL_IP " "     \
-    "FROM " LEASE_POOL_TABLE_NAME " WHERE " LEASE_POOL_LEASE_FLAG " = 0 LIMIT 1;"
-
 #define DHCP_LEASE_RESERVE_ADDRESS_FORMAT_STRING      \
     "UPDATE "       \
     LEASE_POOL_TABLE_NAME " "   \

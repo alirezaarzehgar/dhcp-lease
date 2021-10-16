@@ -137,3 +137,32 @@ dhcpLeaseSqlBuilderLeaseIp (struct poolTbl tbl, char *sqlPtr, char *mac,
 
   free (sql);
 }
+
+void
+dhcpLeaseSqlBuilderInitConfTable (struct configTbl tbl, char *sqlPtr)
+{
+  char format[] = "CREATE TABLE %s ("
+                  "%s INTEGER PRIMARY KEY AUTOINCREMENT, "
+                  "%s TEXT NOT NULL, "
+                  "%s TEXT NOT NULL, "
+                  "%s TEXT NOT NULL, "
+                  "%s INTEGER NOT NULL DEFAULT 600"
+                  ");";
+
+  char *sql = malloc (
+                L (format)
+                + L (tbl.name)
+                + L (tbl.id)
+                + L (tbl.mask)
+                + L (tbl.router)
+                + L (tbl.domain)
+                + L (tbl.lease_time)
+              );
+
+  sprintf (sql, format, tbl.name, tbl.id, tbl.mask, tbl.router, tbl.domain,
+           tbl.lease_time);
+
+  memcpy (sqlPtr, sql, MAX_QUERY_LEN);
+
+  free (sql);
+}

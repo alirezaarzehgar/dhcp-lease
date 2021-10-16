@@ -17,15 +17,6 @@
 #define DHCP_LEASE_HOSTNAME_STR_MAX_LEN         253     /* en.wikipedia.org/wiki/Hostname */
 #define DHCP_LEASE_MAC_STR_MAX_LEN              17
 
-#define DHCP_LEASE_RESERVE_ADDRESS_FORMAT_STRING      \
-    "UPDATE "       \
-    LEASE_POOL_TABLE_NAME " "   \
-    "SET "          \
-    LEASE_POOL_MAC " = \"%s\", "    \
-    LEASE_POOL_HOST " = %s, "    \
-    LEASE_POOL_LEASE_FLAG " = 1 "     \
-    "WHERE " LEASE_POOL_ID " = %d;"
-
 typedef struct
 {
   unsigned int id;

@@ -13,4 +13,8 @@ void dhcpLeaseGetIpFromPoolTest();
 
 void dhcpLeaseIpAddressTest();
 
+void dhcpLeaseInitConfTest();
+
+void dhcpLeaseInitPoolTest();
+
 #endif // TESTS_LEASE

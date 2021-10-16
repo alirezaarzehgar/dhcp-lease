@@ -24,6 +24,10 @@
     return valueForReturn;  \
 } while(0);
 
+#define DHCP_LEASE_DECLARE_AS_NULL(type, name)  \
+  type    name;   \
+  bzero (&name, sizeof (type))
+
 typedef struct
 {
   unsigned int id;

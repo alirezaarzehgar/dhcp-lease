@@ -12,7 +12,8 @@
 #include "lease/lease.h"
 #include "lease/sql_builder.h"
 
-#define POOL_COMMON_QUERY_BUILDER_PARAMETERS      struct poolTbl tbl, char *sqlPtr
+/* POOL_PARAM_{param1}_{param2}_{param-n} */
+#define POOL_PARAM_TBL_SQLPTR      struct poolTbl tbl, char *sqlPtr
 
 #define SQL_BUILDER(fmt, size, fprintfHandler)   \
   char format[] = fmt;   \
@@ -28,8 +29,7 @@
   free (sql);
 
 void
-dhcpLeaseSqlBuilderFindIdByMac (POOL_COMMON_QUERY_BUILDER_PARAMETERS,
-                                char *mac)
+dhcpLeaseSqlBuilderFindIdByMac (POOL_PARAM_TBL_SQLPTR, char *mac)
 {
   SQL_BUILDER (
     "SELECT %s FROM %s WHERE %s = \"%s\";",
@@ -43,7 +43,7 @@ dhcpLeaseSqlBuilderFindIdByMac (POOL_COMMON_QUERY_BUILDER_PARAMETERS,
 }
 
 void
-dhcpLeaseSqlBuilderGetLeaseById (POOL_COMMON_QUERY_BUILDER_PARAMETERS, int id)
+dhcpLeaseSqlBuilderGetLeaseById (POOL_PARAM_TBL_SQLPTR, int id)
 {
   SQL_BUILDER (
     "SELECT  %s, %s, %s FROM %s WHERE %s = %d",
@@ -85,7 +85,7 @@ dhcpLeaseSqlBuilderGetConfigById (struct configTbl ctbl, struct poolTbl ptbl,
 }
 
 void
-dhcpLeaseSqlBuilderGetNonLeasedIp (POOL_COMMON_QUERY_BUILDER_PARAMETERS)
+dhcpLeaseSqlBuilderGetNonLeasedIp (POOL_PARAM_TBL_SQLPTR)
 {
   SQL_BUILDER (
     "SELECT %s, %s, %s FROM %s WHERE %s = 0 LIMIT 1;",
@@ -101,8 +101,8 @@ dhcpLeaseSqlBuilderGetNonLeasedIp (POOL_COMMON_QUERY_BUILDER_PARAMETERS)
 }
 
 void
-dhcpLeaseSqlBuilderLeaseIp (POOL_COMMON_QUERY_BUILDER_PARAMETERS, char *mac,
-                            char *host, int id)
+dhcpLeaseSqlBuilderLeaseIp (POOL_PARAM_TBL_SQLPTR, char *mac, char *host,
+                            int id)
 {
   /* +2 len for double qoutes for hostname ( "query" ) */
   char hostField[DHCP_LEASE_HOSTNAME_STR_MAX_LEN + 2];
@@ -154,7 +154,7 @@ dhcpLeaseSqlBuilderInitConfTable (struct configTbl tbl, char *sqlPtr)
 }
 
 void
-dhcpLeaseSqlBuilderInitPoolTable (POOL_COMMON_QUERY_BUILDER_PARAMETERS)
+dhcpLeaseSqlBuilderInitPoolTable (POOL_PARAM_TBL_SQLPTR)
 {
   SQL_BUILDER (
     "CREATE TABLE %s (\n"
@@ -181,8 +181,7 @@ dhcpLeaseSqlBuilderInitPoolTable (POOL_COMMON_QUERY_BUILDER_PARAMETERS)
 }
 
 void
-dhcpLeaseSqlBuilderPoolFindByX (POOL_COMMON_QUERY_BUILDER_PARAMETERS,
-                                char *condition)
+dhcpLeaseSqlBuilderPoolFindByX (POOL_PARAM_TBL_SQLPTR, char *condition)
 {
   SQL_BUILDER (
     "SELECT * FROM %s WHERE %s;\n\n",
@@ -206,7 +205,7 @@ dhcpLeaseSqlBuilderPoolFindByX (POOL_COMMON_QUERY_BUILDER_PARAMETERS,
   dhcpLeaseSqlBuilderPoolFindByX (tbl, sqlPtr, format);   \
 
 void
-dhcpLeaseSqlBuilderPoolFindById (POOL_COMMON_QUERY_BUILDER_PARAMETERS, int id)
+dhcpLeaseSqlBuilderPoolFindById (POOL_PARAM_TBL_SQLPTR, int id)
 {
   POOL_FIND_BY_X (
     "%s = %d",
@@ -216,8 +215,7 @@ dhcpLeaseSqlBuilderPoolFindById (POOL_COMMON_QUERY_BUILDER_PARAMETERS, int id)
 }
 
 void
-dhcpLeaseSqlBuilderPoolFindByMac (POOL_COMMON_QUERY_BUILDER_PARAMETERS,
-                                  char *mac)
+dhcpLeaseSqlBuilderPoolFindByMac (POOL_PARAM_TBL_SQLPTR, char *mac)
 {
   POOL_FIND_BY_X (
     "%s = %s",
@@ -227,8 +225,7 @@ dhcpLeaseSqlBuilderPoolFindByMac (POOL_COMMON_QUERY_BUILDER_PARAMETERS,
 }
 
 void
-dhcpLeaseSqlBuilderPoolFindByHostname (POOL_COMMON_QUERY_BUILDER_PARAMETERS,
-                                       char *hostname)
+dhcpLeaseSqlBuilderPoolFindByHostname (POOL_PARAM_TBL_SQLPTR, char *hostname)
 {
   POOL_FIND_BY_X (
     "%s = %s",
@@ -238,8 +235,7 @@ dhcpLeaseSqlBuilderPoolFindByHostname (POOL_COMMON_QUERY_BUILDER_PARAMETERS,
 }
 
 void
-dhcpLeaseSqlBuilderPoolFindByIp (POOL_COMMON_QUERY_BUILDER_PARAMETERS,
-                                 char *ip)
+dhcpLeaseSqlBuilderPoolFindByIp (POOL_PARAM_TBL_SQLPTR, char *ip)
 {
   POOL_FIND_BY_X (
     "%s = %s",

@@ -12,45 +12,48 @@
 #include "lease/lease.h"
 #include "lease/sql_builder.h"
 
+#define SQL_BUILDER(fmt, size, fprintfHandler)   \
+  char format[] = fmt;   \
+        \
+  char *sql = (char *)malloc (      \
+                size      \
+              );      \
+        \
+  fprintfHandler;      \
+      \
+  memcpy (sqlPtr, sql, MAX_QUERY_LEN);      \
+        \
+  free (sql);
+
 void
 dhcpLeaseSqlBuilderFindIdByMac (struct poolTbl tbl, char *sqlPtr, char *mac)
 {
-  char format[] = "SELECT %s FROM %s WHERE %s = \"%s\";";
-
-  char *sql = (char *)malloc (
-                L (format)
-                + L (tbl.id)
-                + L (tbl.name)
-                + L (tbl.mac)
-              );
-
-  sprintf (sql, format, tbl.id, tbl.name, tbl.mac, mac);
-
-  memcpy (sqlPtr, sql, MAX_QUERY_LEN);
-
-  free (sql);
+  SQL_BUILDER (
+    "SELECT %s FROM %s WHERE %s = \"%s\";",
+    L (format)
+    + L (tbl.id)
+    + L (tbl.name)
+    + L (tbl.mac),
+  {
+    sprintf (sql, format, tbl.id, tbl.name, tbl.mac, mac);
+  });
 }
 
 void
 dhcpLeaseSqlBuilderGetLeaseById (struct poolTbl tbl, char *sqlPtr, int id)
 {
-  char format[] = "SELECT  %s, %s, %s FROM %s WHERE %s = %d";
-
-  char *sql = (char *)malloc (
-                L (format)
-                + L (tbl.id)
-                + L (tbl.conf_id)
-                + L (tbl.ip)
-                + L (tbl.name)
-                + L (tbl.id)
-                + 9   /* 9 digit id */
-              );
-
-  sprintf (sql, format, tbl.id, tbl.conf_id, tbl.ip, tbl.name, tbl.id, id);
-
-  memcpy (sqlPtr, sql, MAX_QUERY_LEN);
-
-  free (sql);
+  SQL_BUILDER (
+    "SELECT  %s, %s, %s FROM %s WHERE %s = %d",
+    L (format)
+    + L (tbl.id)
+    + L (tbl.conf_id)
+    + L (tbl.ip)
+    + L (tbl.name)
+    + L (tbl.id)
+    + 9   /* 9 digit id */,
+  {
+    sprintf (sql, format, tbl.id, tbl.conf_id, tbl.ip, tbl.name, tbl.id, id);
+  });
 }
 
 void
@@ -193,6 +196,43 @@ dhcpLeaseSqlBuilderInitPoolTable (struct poolTbl tbl, char *sqlPtr)
 
   sprintf (sql, format, tbl.name, tbl.id, tbl.conf_id, tbl.ip, tbl.host, tbl.mac,
            tbl.lease_flag);
+
+  memcpy (sqlPtr, sql, MAX_QUERY_LEN);
+
+  free (sql);
+}
+
+void
+dhcpLeaseSqlBuilderPoolFindByX (struct poolTbl tbl, char *sqlPtr,
+                                char *condition)
+{
+  char format[] = "SELECT * FROM %s WHERE %s;\n\n";
+
+  char *sql = malloc (
+                L (format)
+                + L (tbl.name)
+                + L (condition)
+              );
+
+  sprintf (sql, format, tbl.name, condition);
+
+  memcpy (sqlPtr, sql, MAX_QUERY_LEN);
+
+  free (sql);
+}
+
+void
+dhcpLeaseSqlBuilderPoolFindById (struct poolTbl tbl, char *sqlPtr, int id)
+{
+  char format[] = "%s = %d";
+
+  char *sql = malloc (
+                L (format)
+                + L (tbl.id)
+                + 9   /* 9 digit id */
+              );
+
+  sprintf (sql, format, tbl.id, id);
 
   memcpy (sqlPtr, sql, MAX_QUERY_LEN);
 

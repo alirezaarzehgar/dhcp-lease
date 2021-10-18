@@ -12,19 +12,6 @@
 #include "lease/lease.h"
 #include "lease/sql_builder.h"
 
-#define SQL_BUILDER(fmt, size, fprintfHandler)   \
-  char format[] = fmt;   \
-        \
-  char *sql = (char *)malloc (      \
-                size      \
-              );      \
-        \
-  fprintfHandler;      \
-      \
-  memcpy (sqlPtr, sql, MAX_QUERY_LEN);      \
-        \
-  free (sql);
-
 void
 dhcpLeaseSqlBuilderFindIdByMac (struct poolTbl tbl, char *sqlPtr, char *mac)
 {

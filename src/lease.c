@@ -189,6 +189,24 @@ dhcpLeaseGetIpFromPool (char *mac)
   return lease;
 }
 
+dhcpLeasePoolResult_t
+dhcpLeasePoolGetById (int id)
+{
+  /* TODO */
+}
+
+dhcpLeasePoolResult_t
+dhcpLeasePoolGetByMac (char *mac)
+{
+  /* TODO */
+}
+
+dhcpLeasePoolResult_t
+dhcpLeasePoolGetByHostname (char *hostname)
+{
+  /* TODO */
+}
+
 bool
 dhcpLeaseIpAddress (unsigned int id, const char *mac, const char *host)
 {

@@ -73,6 +73,12 @@ dhcpLeaseConfigResult_t dhcpLeaseGetConfigById (unsigned int id);
 
 dhcpLeasePoolResult_t dhcpLeaseGetIpFromPool (char *mac);
 
+dhcpLeasePoolResult_t dhcpLeasePoolGetById (int id);
+
+dhcpLeasePoolResult_t dhcpLeasePoolGetByMac (char *mac);
+
+dhcpLeasePoolResult_t dhcpLeasePoolGetByHostname (char *hostname);
+
 bool dhcpLeaseIpAddress (unsigned int id, const char *mac, const char *host);
 
 bool dhcpLeaseInitPool();

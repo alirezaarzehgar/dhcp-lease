@@ -11,19 +11,6 @@
 #define MAX_QUERY_LEN                500
 #define L(var)                       strlen(var)
 
-#define SQL_BUILDER(fmt, size, fprintfHandler)   \
-  char format[] = fmt;   \
-        \
-  char *sql = (char *)malloc (      \
-                size      \
-              );      \
-        \
-  fprintfHandler;      \
-      \
-  memcpy (sqlPtr, sql, MAX_QUERY_LEN);      \
-        \
-  free (sql);
-
 void dhcpLeaseSqlBuilderFindIdByMac (struct poolTbl tbl, char *sqlPtr,
                                      char *mac);
 

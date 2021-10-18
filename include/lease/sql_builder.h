@@ -29,4 +29,15 @@ void dhcpLeaseSqlBuilderInitConfTable (struct configTbl tbl, char *sqlPtr);
 
 void dhcpLeaseSqlBuilderInitPoolTable (struct poolTbl tbl, char *sqlPtr);
 
+void dhcpLeaseSqlBuilderPoolFindByX (POOL_PARAM_TBL_SQLPTR, char *condition);
+
+void dhcpLeaseSqlBuilderPoolFindById (POOL_PARAM_TBL_SQLPTR, int id);
+
+void dhcpLeaseSqlBuilderPoolFindByMac (POOL_PARAM_TBL_SQLPTR, char *mac);
+
+void dhcpLeaseSqlBuilderPoolFindByHostname (POOL_PARAM_TBL_SQLPTR,
+    char *hostname);
+
+void dhcpLeaseSqlBuilderPoolFindByIp (POOL_PARAM_TBL_SQLPTR, char *ip);
+
 #endif // LEASE_SQL_BUILDER_H

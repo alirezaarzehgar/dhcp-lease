@@ -11,6 +11,9 @@
 #define MAX_QUERY_LEN                500
 #define L(var)                       strlen(var)
 
+/* POOL_PARAM_{param1}_{param2}_{param-n} */
+#define POOL_PARAM_TBL_SQLPTR      struct poolTbl tbl, char *sqlPtr
+
 void dhcpLeaseSqlBuilderFindIdByMac (struct poolTbl tbl, char *sqlPtr,
                                      char *mac);
 

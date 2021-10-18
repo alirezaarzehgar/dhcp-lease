@@ -12,6 +12,7 @@
 #include "lease/lease.h"
 #include "lease/sql_builder.h"
 
+/* POOL_PARAM_{param1}_{param2}_{param-n} */
 #define POOL_PARAM_TBL_SQLPTR      struct poolTbl tbl, char *sqlPtr
 
 #define SQL_BUILDER(fmt, size, fprintfHandler)   \

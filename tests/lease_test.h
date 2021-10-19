@@ -17,4 +17,18 @@ void dhcpLeaseInitConfTest();
 
 void dhcpLeaseInitPoolTest();
 
+void dhcpLeaseMacAddressAlreadyExistsTest();
+
+void dhcpLeaseGetPoolByIdTest();
+
+void dhcpLeaseGetConfigByIdTest();
+
+void dhcpLeasePoolGetByIdTest();
+
+void dhcpLeasePoolGetByMacTest();
+
+void dhcpLeasePoolGetByHostnameTest();
+
+void dhcpLeasePoolGetByIpTest();
+
 #endif // TESTS_LEASE

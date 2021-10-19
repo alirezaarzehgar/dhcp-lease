@@ -226,7 +226,7 @@ getLeaseCallback (void *leasePtr, int argc, char **argv, char **col)
     {
       bzero (&lease->host, sizeof (lease->host));
 
-      bzero (&lease->ip, sizeof (lease->ip));
+      strncpy (lease->ip, argv[POOL_TBL_IP], DHCP_LEASE_IP_STR_LEN);
 
       bzero (&lease->mac, sizeof (lease->mac));
 

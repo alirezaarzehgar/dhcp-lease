@@ -18,6 +18,8 @@ CU_TestInfo lease_tests[] =
   {"dhcpLeasePoolGetByMacTest", dhcpLeasePoolGetByMacTest},
   {"dhcpLeasePoolGetByHostnameTest", dhcpLeasePoolGetByHostnameTest},
   {"dhcpLeasePoolGetByIpTest", dhcpLeasePoolGetByIpTest},
+  {"dhcpLeasePoolCountTest", dhcpLeasePoolCountTest},
+  {"dhcpLeaseConfCountTest", dhcpLeaseConfCountTest},
   CU_TEST_INFO_NULL,
 };
 

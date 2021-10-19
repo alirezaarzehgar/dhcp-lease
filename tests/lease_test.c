@@ -1,7 +1,7 @@
 /**
  * @file lease_test.c
  * @author alirezaarzehgar (alirezaarzehgar82@gmail.com)
- * @brief
+ * @brief Incomplete and wrong test
  * @version 0.1
  * @date 2021-10-11
  *
@@ -9,14 +9,22 @@
  *
  */
 
+/**
+ *              TODO We should refactor this tests and improve cases
+ */
+
 #include "lease_test.h"
 #include <CUnit/CUnit.h>
+#include <time.h>
 
-#define CLIENT_MAC_ADDERSS "d4:f2:76:d0:a4:0f"
+#define CLIENT_MAC_ADDERSS  "d4:f2:76:d0:a4:0f"
+#define CLIENT_HOSTNAME     "ali"
+#define MAX_LEASE           200
 
 int
 initSuiteLease()
 {
+  srand (time (NULL));
   return 0;
 }
 
@@ -27,19 +35,15 @@ cleanupSuiteLease()
 }
 
 void
-dhcpLeaseGetIpFromPoolTest()
+printLease (dhcpLeasePoolResult_t lease)
 {
-  dhcpLeasePoolResult_t lease;
-
-  bzero (&lease, sizeof (dhcpLeasePoolResult_t));
-
-  dhcpLeaseInit (FAKE_DATABASE_PATH);
-
-  lease = dhcpLeaseGetIpFromPool (CLIENT_MAC_ADDERSS);
-
-  dhcpLeaseClose();
-
-  printf ("\n\nlease :\n\tid -> %d\n\tip -> %s\n\n", lease.id, lease.ip);
+  printf (
+    "\n\n"
+    "lease :\n"
+    "\tid -> %d\n"
+    "\tip -> %s\n"
+    "\thost -> %s\n"
+    "\tmac -> %s\n\n", lease.id, lease.ip, lease.host, lease.mac);
 
   printf ("configs : \n"
           "\tid -> %d\n"
@@ -54,21 +58,37 @@ dhcpLeaseGetIpFromPoolTest()
 }
 
 void
+dhcpLeaseGetIpFromPoolTest()
+{
+  dhcpLeaseInit (FAKE_DATABASE_PATH);
+
+  dhcpLeasePoolResult_t lease;
+
+  bzero (&lease, sizeof (dhcpLeasePoolResult_t));
+
+  lease = dhcpLeaseGetIpFromPool (CLIENT_MAC_ADDERSS);
+
+  printLease (lease);
+
+  dhcpLeaseClose();
+}
+
+void
 dhcpLeaseIpAddressTest()
 {
+  dhcpLeaseInit (FAKE_DATABASE_PATH);
+
   dhcpLeasePoolResult_t lease;
 
   int retval;
 
-  dhcpLeaseInit (FAKE_DATABASE_PATH);
-
   lease = dhcpLeaseGetIpFromPool (CLIENT_MAC_ADDERSS);
 
-  retval = dhcpLeaseIpAddress (lease.id, CLIENT_MAC_ADDERSS, "ali");
-
-  dhcpLeaseClose();
+  retval = dhcpLeaseIpAddress (lease.id, CLIENT_MAC_ADDERSS, CLIENT_HOSTNAME);
 
   CU_ASSERT_TRUE (retval);
+
+  dhcpLeaseClose();
 }
 
 void
@@ -104,12 +124,6 @@ dhcpLeaseMacAddressAlreadyExistsTest()
 }
 
 void
-dhcpLeaseGetPoolByIdTest()
-{
-  /*  TODO dhcpLeaseGetPoolByIdTest */
-}
-
-void
 dhcpLeaseGetConfigByIdTest()
 {
   /*  TODO dhcpLeaseGetConfigByIdTest */
@@ -118,23 +132,23 @@ dhcpLeaseGetConfigByIdTest()
 void
 dhcpLeasePoolGetByIdTest()
 {
-  /*  TODO dhcpLeasePoolGetByIdTest */
+  BASE_GET_BY_X (dhcpLeasePoolGetById, rand() % MAX_LEASE);
 }
 
 void
 dhcpLeasePoolGetByMacTest()
 {
-  /*  TODO dhcpLeasePoolGetByMacTest */
+  BASE_GET_BY_X (dhcpLeasePoolGetByMac, CLIENT_MAC_ADDERSS);
 }
 
 void
 dhcpLeasePoolGetByHostnameTest()
 {
-  /*  TODO dhcpLeasePoolGetByHostnameTest */
+  BASE_GET_BY_X (dhcpLeasePoolGetByHostname, CLIENT_HOSTNAME);
 }
 
 void
 dhcpLeasePoolGetByIpTest()
 {
-  /*  TODO dhcpLeasePoolGetByIpTest */
+  BASE_GET_BY_X (dhcpLeasePoolGetByIp, "192.168.133.6");
 }

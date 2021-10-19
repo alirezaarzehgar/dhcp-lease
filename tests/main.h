@@ -13,7 +13,6 @@ CU_TestInfo lease_tests[] =
   {"dhcpLeaseInitConfTest", dhcpLeaseInitConfTest},
   {"dhcpLeaseInitPoolTest", dhcpLeaseInitPoolTest},
   {"dhcpLeaseMacAddressAlreadyExistsTest", dhcpLeaseMacAddressAlreadyExistsTest},
-  {"dhcpLeaseGetPoolByIdTest", dhcpLeaseGetPoolByIdTest},
   {"dhcpLeaseGetConfigByIdTest", dhcpLeaseGetConfigByIdTest},
   {"dhcpLeasePoolGetByIdTest", dhcpLeasePoolGetByIdTest},
   {"dhcpLeasePoolGetByMacTest", dhcpLeasePoolGetByMacTest},

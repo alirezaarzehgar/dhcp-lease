@@ -192,7 +192,7 @@ dhcpLeaseGetIpFromPool (char *mac)
 #define GET_POOL_BY_X_PATTERN(function, value)     \
   int retval;     \
       \
-  dhcpLeasePoolResult_t lease;    \
+  DHCP_LEASE_DECLARE_AS_NULL(dhcpLeasePoolResult_t, lease);    \
     \
   char sql[MAX_QUERY_LEN];    \
       \
@@ -221,8 +221,20 @@ getLeaseCallback (void *leasePtr, int argc, char **argv, char **col)
   lease->id = id;
   lease->lease_flag = lease_flag;
   lease->config = dhcpLeaseGetConfigById (conf_id);
+
+  if (lease->lease_flag == 0)
+    {
+      bzero (&lease->host, sizeof (lease->host));
+
+      bzero (&lease->ip, sizeof (lease->ip));
+
+      bzero (&lease->mac, sizeof (lease->mac));
+
+      return SQLITE_OK;
+    }
+
   strncpy (lease->host, argv[POOL_TBL_HOST], DHCP_LEASE_HOSTNAME_STR_MAX_LEN);
-  strncpy (lease->ip, argv[POOL_TBL_IP], DHCP_LEASE_IP_STR_LEN + 1);
+  strncpy (lease->ip, argv[POOL_TBL_IP], DHCP_LEASE_IP_STR_LEN);
   strncpy (lease->mac, argv[POOL_TBL_MAC], DHCP_LEASE_MAC_STR_MAX_LEN);
 
   return SQLITE_OK;
@@ -231,13 +243,13 @@ getLeaseCallback (void *leasePtr, int argc, char **argv, char **col)
 dhcpLeasePoolResult_t
 dhcpLeasePoolGetById (int id)
 {
-  GET_POOL_BY_X_PATTERN (dhcpLeaseSqlBuilderGetLeaseById, id);
+  GET_POOL_BY_X_PATTERN (dhcpLeaseSqlBuilderPoolFindById, id);
 }
 
 dhcpLeasePoolResult_t
 dhcpLeasePoolGetByMac (char *mac)
 {
-  GET_POOL_BY_X_PATTERN (dhcpLeaseSqlBuilderFindIdByMac, mac);
+  GET_POOL_BY_X_PATTERN (dhcpLeaseSqlBuilderPoolFindByMac, mac);
 }
 
 dhcpLeasePoolResult_t

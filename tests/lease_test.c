@@ -21,6 +21,15 @@
 #define CLIENT_HOSTNAME     "ali"
 #define MAX_LEASE           200
 
+#define CODE_BEHINDE_INITCLOSE_DB(TODO)      \
+do {      \
+  dhcpLeaseInit (FAKE_DATABASE_PATH);     \
+      \
+  { TODO }      \
+        \
+  dhcpLeaseClose();     \
+} while(0)
+
 int
 initSuiteLease()
 {
@@ -60,35 +69,33 @@ printLease (dhcpLeasePoolResult_t lease)
 void
 dhcpLeaseGetIpFromPoolTest()
 {
-  dhcpLeaseInit (FAKE_DATABASE_PATH);
+  CODE_BEHINDE_INITCLOSE_DB (
+  {
+    dhcpLeasePoolResult_t lease;
 
-  dhcpLeasePoolResult_t lease;
+    bzero (&lease, sizeof (dhcpLeasePoolResult_t));
 
-  bzero (&lease, sizeof (dhcpLeasePoolResult_t));
+    lease = dhcpLeaseGetIpFromPool (CLIENT_MAC_ADDERSS);
 
-  lease = dhcpLeaseGetIpFromPool (CLIENT_MAC_ADDERSS);
-
-  printLease (lease);
-
-  dhcpLeaseClose();
+    printLease (lease);
+  });
 }
 
 void
 dhcpLeaseIpAddressTest()
 {
-  dhcpLeaseInit (FAKE_DATABASE_PATH);
+  CODE_BEHINDE_INITCLOSE_DB (
+  {
+    dhcpLeasePoolResult_t lease;
 
-  dhcpLeasePoolResult_t lease;
+    int retval;
 
-  int retval;
+    lease = dhcpLeaseGetIpFromPool (CLIENT_MAC_ADDERSS);
 
-  lease = dhcpLeaseGetIpFromPool (CLIENT_MAC_ADDERSS);
+    retval = dhcpLeaseIpAddress (lease.id, CLIENT_MAC_ADDERSS, CLIENT_HOSTNAME);
 
-  retval = dhcpLeaseIpAddress (lease.id, CLIENT_MAC_ADDERSS, CLIENT_HOSTNAME);
-
-  CU_ASSERT_TRUE (retval);
-
-  dhcpLeaseClose();
+    CU_ASSERT_TRUE (retval);
+  });
 }
 
 void
@@ -151,4 +158,22 @@ void
 dhcpLeasePoolGetByIpTest()
 {
   BASE_GET_BY_X (dhcpLeasePoolGetByIp, "192.168.133.6");
+}
+
+void
+dhcpLeasePoolCountTest()
+{
+  CODE_BEHINDE_INITCLOSE_DB (
+  {
+    CU_ASSERT_EQUAL (dhcpLeasePoolCount(), MAX_LEASE);
+  });
+}
+
+void
+dhcpLeaseConfCountTest()
+{
+  CODE_BEHINDE_INITCLOSE_DB (
+  {
+    CU_ASSERT_EQUAL (dhcpLeaseConfCount(), 5);
+  });
 }

@@ -72,6 +72,13 @@ typedef struct
 
 } dhcpLeasePoolResult_t;
 
+
+typedef struct
+{
+  char name[7];
+  char id[3];
+} commonTbl_t;
+
 int dhcpLeaseInit (const char *path);
 
 void dhcpLeaseClose();
@@ -95,5 +102,9 @@ bool dhcpLeaseIpAddress (unsigned int id, const char *mac, const char *host);
 bool dhcpLeaseInitPool();
 
 bool dhcpLeaseInitConf();
+
+int dhcpLeasePoolCount();
+
+int dhcpLeaseConfCount();
 
 #endif // LEASE_H

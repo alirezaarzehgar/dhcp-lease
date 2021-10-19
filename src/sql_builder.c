@@ -237,3 +237,19 @@ dhcpLeaseSqlBuilderPoolFindByIp (POOL_PARAM_TBL_SQLPTR, char *ip)
     L (ip)
   );
 }
+
+void
+dhcpLeaseSqlBuilderXCount (void *tbl, char *sqlPtr)
+{
+  char format[] = "SELECT count() FROM %s;";
+
+  char *sql = malloc (
+                L (format) + L (((commonTbl_t *)tbl)->name)
+              );
+
+  sprintf (sql, format, ((commonTbl_t *)tbl)->name);
+
+  memcpy (sqlPtr, sql, MAX_QUERY_LEN);
+
+  free (sql);
+}

@@ -38,4 +38,8 @@ void dhcpLeasePoolGetByHostnameTest();
 
 void dhcpLeasePoolGetByIpTest();
 
+void dhcpLeasePoolCountTest();
+
+void dhcpLeaseConfCountTest();
+
 #endif // TESTS_LEASE

@@ -264,6 +264,44 @@ dhcpLeasePoolGetByIp (char *ip)
   GET_POOL_BY_X_PATTERN (dhcpLeaseSqlBuilderPoolFindByIp, ip);
 }
 
+int
+dhcpLeaseXCount (void *tbl)
+{
+  int retval;
+
+  char sql[MAX_QUERY_LEN];
+
+  int count;
+
+  dhcpLeaseSqlBuilderXCount (tbl, sql);
+
+  int callback (void *count, int argc, char **argv, char **col)
+  {
+    int *c = (int *)count;
+
+    if (argv[0] != NULL)
+      *c = atoi (argv[0]);
+
+    return SQLITE_OK;
+  }
+
+  retval = sqlite3_exec (db, sql, callback, &count, NULL);
+
+  return count;
+}
+
+int
+dhcpLeasePoolCount()
+{
+  return dhcpLeaseXCount ((void *)&PoolTbl);
+}
+
+int
+dhcpLeaseConfCount()
+{
+  return dhcpLeaseXCount ((void *)&ConfigTbl);
+}
+
 bool
 dhcpLeaseIpAddress (unsigned int id, const char *mac, const char *host)
 {

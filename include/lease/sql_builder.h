@@ -43,4 +43,6 @@ void dhcpLeaseSqlBuilderPoolFindByHostname (POOL_PARAM_TBL_SQLPTR,
 
 void dhcpLeaseSqlBuilderPoolFindByIp (POOL_PARAM_TBL_SQLPTR, char *ip);
 
+void dhcpLeaseSqlBuilderXCount (void *tbl, char *sqlPtr);
+
 #endif // LEASE_SQL_BUILDER_H

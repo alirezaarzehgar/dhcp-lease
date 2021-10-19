@@ -27,18 +27,8 @@ cleanupSuiteLease()
 }
 
 void
-dhcpLeaseGetIpFromPoolTest()
+printLease (dhcpLeasePoolResult_t lease)
 {
-  dhcpLeasePoolResult_t lease;
-
-  bzero (&lease, sizeof (dhcpLeasePoolResult_t));
-
-  dhcpLeaseInit (FAKE_DATABASE_PATH);
-
-  lease = dhcpLeaseGetIpFromPool (CLIENT_MAC_ADDERSS);
-
-  dhcpLeaseClose();
-
   printf ("\n\nlease :\n\tid -> %d\n\tip -> %s\n\n", lease.id, lease.ip);
 
   printf ("configs : \n"
@@ -51,6 +41,22 @@ dhcpLeaseGetIpFromPoolTest()
           lease.config.domain, lease.config.lease_time);
 
   printf ("\n\n");
+}
+
+void
+dhcpLeaseGetIpFromPoolTest()
+{
+  dhcpLeasePoolResult_t lease;
+
+  bzero (&lease, sizeof (dhcpLeasePoolResult_t));
+
+  dhcpLeaseInit (FAKE_DATABASE_PATH);
+
+  lease = dhcpLeaseGetIpFromPool (CLIENT_MAC_ADDERSS);
+
+  dhcpLeaseClose();
+
+  printLease (lease);
 }
 
 void
@@ -106,7 +112,14 @@ dhcpLeaseMacAddressAlreadyExistsTest()
 void
 dhcpLeaseGetPoolByIdTest()
 {
-  /*  TODO dhcpLeaseGetPoolByIdTest */
+  dhcpLeaseInit(FAKE_DATABASE_PATH);
+
+  dhcpLeasePoolResult_t lease = dhcpLeasePoolGetById (3);
+
+  printLease(lease);
+
+  dhcpLeaseClose();
+
 }
 
 void

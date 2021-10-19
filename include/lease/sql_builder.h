@@ -8,7 +8,7 @@
 #if !defined(LEASE_SQL_BUILDER_H)
 #define LEASE_SQL_BUILDER_H
 
-#define MAX_QUERY_LEN                500
+#define MAX_QUERY_LEN                1000
 #define L(var)                       strlen(var)
 
 /* POOL_PARAM_{param1}_{param2}_{param-n} */

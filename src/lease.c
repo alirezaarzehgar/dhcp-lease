@@ -214,6 +214,12 @@ getLeaseCallback (void *leasePtr, int argc, char **argv, char **col)
 {
   dhcpLeasePoolResult_t *lease = (dhcpLeasePoolResult_t *)leasePtr;
 
+  for (size_t i = 0; i < argc; i++)
+  {
+    printf("%s, ", argv[i]);
+  }printf("\n");
+  
+
   int id = atoi (argv[POOL_TBL_ID]);
   int conf_id = atoi (argv[POOL_TBL_CONF_ID]);
   int lease_flag = atoi (argv[POOL_TBL_LEASE_FLAG]);
@@ -231,7 +237,7 @@ getLeaseCallback (void *leasePtr, int argc, char **argv, char **col)
 dhcpLeasePoolResult_t
 dhcpLeasePoolGetById (int id)
 {
-  GET_POOL_BY_X_PATTERN (dhcpLeaseSqlBuilderGetLeaseById, id);
+  GET_POOL_BY_X_PATTERN (dhcpLeaseSqlBuilderPoolFindById, id);
 }
 
 dhcpLeasePoolResult_t

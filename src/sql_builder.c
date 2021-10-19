@@ -43,7 +43,7 @@ void
 dhcpLeaseSqlBuilderGetLeaseById (POOL_PARAM_TBL_SQLPTR, int id)
 {
   SQL_BUILDER (
-    "SELECT  %s, %s, %s FROM %s WHERE %s = %d",
+    "SELECT  %s, %s, %s FROM %s WHERE %s = %d;\n\n",
     L (format)
     + L (tbl.id)
     + L (tbl.conf_id)
@@ -190,14 +190,14 @@ dhcpLeaseSqlBuilderPoolFindByX (POOL_PARAM_TBL_SQLPTR, char *condition)
   });
 }
 
-#define POOL_FIND_BY_X(fmt, X, size)   \
+#define POOL_FIND_BY_X(fmt, filed, X, size)   \
   char *format = malloc (     \
                    L (format)     \
                    + L (tbl.id)     \
                    + size     \
                  );   \
         \
-  sprintf (format, fmt, tbl.name, X);      \
+  sprintf (format, fmt, tbl.filed, X);      \
         \
   dhcpLeaseSqlBuilderPoolFindByX (tbl, sqlPtr, format);   \
 
@@ -206,6 +206,7 @@ dhcpLeaseSqlBuilderPoolFindById (POOL_PARAM_TBL_SQLPTR, int id)
 {
   POOL_FIND_BY_X (
     "%s = %d",
+    id,
     id,
     9   /* 9 digit id */
   );
@@ -216,7 +217,7 @@ dhcpLeaseSqlBuilderPoolFindByMac (POOL_PARAM_TBL_SQLPTR, char *mac)
 {
   POOL_FIND_BY_X (
     "%s = %s",
-    mac,
+    mac, mac,
     L (mac)
   );
 }
@@ -226,7 +227,7 @@ dhcpLeaseSqlBuilderPoolFindByHostname (POOL_PARAM_TBL_SQLPTR, char *hostname)
 {
   POOL_FIND_BY_X (
     "%s = %s",
-    hostname,
+    host, hostname,
     L (hostname)
   )
 }
@@ -236,7 +237,7 @@ dhcpLeaseSqlBuilderPoolFindByIp (POOL_PARAM_TBL_SQLPTR, char *ip)
 {
   POOL_FIND_BY_X (
     "%s = %s",
-    ip,
+    ip, ip,
     L (ip)
   );
 }

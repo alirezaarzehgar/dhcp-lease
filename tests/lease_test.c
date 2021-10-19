@@ -84,3 +84,57 @@ dhcpLeaseInitPoolTest()
   dhcpLeaseInitPool();
   dhcpLeaseClose();
 }
+
+void
+dhcpLeaseInitTest()
+{
+  /*  TODO dhcpLeaseInitTest */
+}
+
+void
+dhcpLeaseCloseTest()
+{
+  /*  TODO dhcpLeaseCloseTest */
+}
+
+void
+dhcpLeaseMacAddressAlreadyExistsTest()
+{
+  /*  TODO dhcpLeaseMacAddressAlreadyExistsTest */
+}
+
+void
+dhcpLeaseGetPoolByIdTest()
+{
+  /*  TODO dhcpLeaseGetPoolByIdTest */
+}
+
+void
+dhcpLeaseGetConfigByIdTest()
+{
+  /*  TODO dhcpLeaseGetConfigByIdTest */
+}
+
+void
+dhcpLeasePoolGetByIdTest()
+{
+  /*  TODO dhcpLeasePoolGetByIdTest */
+}
+
+void
+dhcpLeasePoolGetByMacTest()
+{
+  /*  TODO dhcpLeasePoolGetByMacTest */
+}
+
+void
+dhcpLeasePoolGetByHostnameTest()
+{
+  /*  TODO dhcpLeasePoolGetByHostnameTest */
+}
+
+void
+dhcpLeasePoolGetByIpTest()
+{
+  /*  TODO dhcpLeasePoolGetByIpTest */
+}

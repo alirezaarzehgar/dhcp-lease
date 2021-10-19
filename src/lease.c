@@ -192,7 +192,7 @@ dhcpLeaseGetIpFromPool (char *mac)
 #define GET_POOL_BY_X_PATTERN(function, value)     \
   int retval;     \
       \
-  dhcpLeasePoolResult_t lease;    \
+  DHCP_LEASE_DECLARE_AS_NULL(dhcpLeasePoolResult_t, lease);    \
     \
   char sql[MAX_QUERY_LEN];    \
       \

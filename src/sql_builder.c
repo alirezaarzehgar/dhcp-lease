@@ -191,11 +191,7 @@ dhcpLeaseSqlBuilderPoolFindByX (POOL_PARAM_TBL_SQLPTR, char *condition)
 }
 
 #define POOL_FIND_BY_X(fmt, filed, X, size)   \
-  char *format = malloc (     \
-                   L (format)     \
-                   + L (tbl.id)     \
-                   + size     \
-                 );   \
+  char format[L (fmt) + L (tbl.filed)];   \
         \
   sprintf (format, fmt, tbl.filed, X);      \
         \

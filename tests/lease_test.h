@@ -19,8 +19,6 @@ void dhcpLeaseInitPoolTest();
 
 void dhcpLeaseMacAddressAlreadyExistsTest();
 
-void dhcpLeaseGetPoolByIdTest();
-
 void dhcpLeaseGetConfigByIdTest();
 
 void dhcpLeasePoolGetByIdTest();

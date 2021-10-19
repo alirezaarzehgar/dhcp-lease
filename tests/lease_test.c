@@ -12,7 +12,9 @@
 #include "lease_test.h"
 #include <CUnit/CUnit.h>
 
-#define CLIENT_MAC_ADDERSS "d4:f2:76:d0:a4:0f"
+#define CLIENT_MAC_ADDERSS  "d4:f2:76:d0:a4:0f"
+#define CLIENT_HOSTNAME     "ali"
+#define MAX_LEASE           200
 
 int
 initSuiteLease()
@@ -76,7 +78,7 @@ dhcpLeaseIpAddressTest()
 
   lease = dhcpLeaseGetIpFromPool (CLIENT_MAC_ADDERSS);
 
-  retval = dhcpLeaseIpAddress (lease.id, CLIENT_MAC_ADDERSS, "ali");
+  retval = dhcpLeaseIpAddress (lease.id, CLIENT_MAC_ADDERSS, CLIENT_HOSTNAME);
 
   CU_ASSERT_TRUE (retval);
 
@@ -116,27 +118,27 @@ dhcpLeaseMacAddressAlreadyExistsTest()
 }
 
 void
-dhcpLeaseGetPoolByIdTest()
-{
-  dhcpLeaseInit (FAKE_DATABASE_PATH);
-
-  dhcpLeasePoolResult_t lease = dhcpLeasePoolGetById (4);
-
-  printLease (lease);
-
-  dhcpLeaseClose();
-}
-
-void
 dhcpLeaseGetConfigByIdTest()
 {
   /*  TODO dhcpLeaseGetConfigByIdTest */
 }
 
+#define BASE_GET_BY_X(function, value)   \
+  dhcpLeaseInit (FAKE_DATABASE_PATH);     \
+      \
+  dhcpLeasePoolResult_t lease = function (value);     \
+      \
+  printLease (lease);     \
+      \
+  dhcpLeaseClose();
+
 void
 dhcpLeasePoolGetByIdTest()
 {
-  /*  TODO dhcpLeasePoolGetByIdTest */
+  dhcpLeaseInit (FAKE_DATABASE_PATH);
+  dhcpLeasePoolResult_t lease = dhcpLeasePoolGetById (-111);
+  printLease (lease);
+  dhcpLeaseClose();
 }
 
 void
@@ -156,7 +158,7 @@ dhcpLeasePoolGetByHostnameTest()
 {
   dhcpLeaseInit (FAKE_DATABASE_PATH);
 
-  dhcpLeasePoolResult_t lease = dhcpLeasePoolGetByHostname ("ali");
+  dhcpLeasePoolResult_t lease = dhcpLeasePoolGetByHostname (CLIENT_HOSTNAME);
 
   printLease (lease);
 

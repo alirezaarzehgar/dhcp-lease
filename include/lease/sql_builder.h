@@ -9,7 +9,7 @@
 #define LEASE_SQL_BUILDER_H
 
 #define MAX_QUERY_LEN                1000
-#define L(var)                       strlen(var)
+#define L(var)                       (strlen(var) + (1))
 
 /* POOL_PARAM_{param1}_{param2}_{param-n} */
 #define POOL_PARAM_TBL_SQLPTR      struct poolTbl tbl, char *sqlPtr

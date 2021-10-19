@@ -216,7 +216,7 @@ void
 dhcpLeaseSqlBuilderPoolFindByMac (POOL_PARAM_TBL_SQLPTR, char *mac)
 {
   POOL_FIND_BY_X (
-    "%s = %s",
+    "%s = \"%s\"",
     mac, mac,
     L (mac)
   );
@@ -226,7 +226,7 @@ void
 dhcpLeaseSqlBuilderPoolFindByHostname (POOL_PARAM_TBL_SQLPTR, char *hostname)
 {
   POOL_FIND_BY_X (
-    "%s = %s",
+    "%s = \"%s\"",
     host, hostname,
     L (hostname)
   )
@@ -236,7 +236,7 @@ void
 dhcpLeaseSqlBuilderPoolFindByIp (POOL_PARAM_TBL_SQLPTR, char *ip)
 {
   POOL_FIND_BY_X (
-    "%s = %s",
+    "%s = \"%s\"",
     ip, ip,
     L (ip)
   );

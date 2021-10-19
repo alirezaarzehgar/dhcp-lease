@@ -249,7 +249,7 @@ dhcpLeasePoolGetById (int id)
 dhcpLeasePoolResult_t
 dhcpLeasePoolGetByMac (char *mac)
 {
-  GET_POOL_BY_X_PATTERN (dhcpLeaseSqlBuilderFindIdByMac, mac);
+  GET_POOL_BY_X_PATTERN (dhcpLeaseSqlBuilderPoolFindByMac, mac);
 }
 
 dhcpLeasePoolResult_t

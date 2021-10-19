@@ -78,7 +78,7 @@ dhcpLeaseIpAddressTest()
   retval = dhcpLeaseIpAddress (lease.id, CLIENT_MAC_ADDERSS, "ali");
 
   CU_ASSERT_TRUE (retval);
-  
+
   dhcpLeaseClose();
 }
 
@@ -117,13 +117,12 @@ dhcpLeaseMacAddressAlreadyExistsTest()
 void
 dhcpLeaseGetPoolByIdTest()
 {
-
   dhcpLeaseInit (FAKE_DATABASE_PATH);
 
   dhcpLeasePoolResult_t lease = dhcpLeasePoolGetById (4);
 
   printLease (lease);
-  
+
   dhcpLeaseClose();
 }
 
@@ -142,7 +141,13 @@ dhcpLeasePoolGetByIdTest()
 void
 dhcpLeasePoolGetByMacTest()
 {
-  /*  TODO dhcpLeasePoolGetByMacTest */
+  dhcpLeaseInit (FAKE_DATABASE_PATH);
+
+  dhcpLeasePoolResult_t lease = dhcpLeasePoolGetByMac (CLIENT_MAC_ADDERSS);
+
+  printLease (lease);
+
+  dhcpLeaseClose();
 }
 
 void

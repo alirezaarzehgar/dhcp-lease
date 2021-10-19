@@ -240,3 +240,17 @@ dhcpLeaseSqlBuilderPoolFindByIp (POOL_PARAM_TBL_SQLPTR, char *ip)
     L (ip)
   );
 }
+
+void
+dhcpLeaseSqlBuilderPoolUpdate (POOL_PARAM_TBL_SQLPTR,
+                               dhcpLeasePoolResult_t lease)
+{
+  char format[] =
+    "UPDATE %s "        /* UPDATE pool  */
+    "SET %s = %d,"      /* SET conf_id = id */
+    " %s = \"%s\","     /* ip = "ip" */
+    " %s = \"%s\","     /* host = "host" */
+    " %s = \"%s\","     /* mac = "mac" */
+    " %s = %d "         /* lease_flag = 1 */
+    "WHERE %s = %d;";   /* WHERE id = id; */
+}

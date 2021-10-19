@@ -29,7 +29,12 @@ cleanupSuiteLease()
 void
 printLease (dhcpLeasePoolResult_t lease)
 {
-  printf ("\n\nlease :\n\tid -> %d\n\tip -> %s\n\n", lease.id, lease.ip);
+  printf (
+    "\n\n"
+    "lease :\n"
+    "\tid -> %d\n"
+    "\tip -> %s\n"
+    "\tmac -> %s\n\n", lease.id, lease.ip, lease.mac);
 
   printf ("configs : \n"
           "\tid -> %d\n"
@@ -112,11 +117,11 @@ dhcpLeaseMacAddressAlreadyExistsTest()
 void
 dhcpLeaseGetPoolByIdTest()
 {
-  dhcpLeaseInit(FAKE_DATABASE_PATH);
+  dhcpLeaseInit (FAKE_DATABASE_PATH);
 
-  dhcpLeasePoolResult_t lease = dhcpLeasePoolGetById (3);
+  dhcpLeasePoolResult_t lease = dhcpLeasePoolGetById (4);
 
-  printLease(lease);
+  printLease (lease);
 
   dhcpLeaseClose();
 

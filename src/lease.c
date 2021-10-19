@@ -214,12 +214,6 @@ getLeaseCallback (void *leasePtr, int argc, char **argv, char **col)
 {
   dhcpLeasePoolResult_t *lease = (dhcpLeasePoolResult_t *)leasePtr;
 
-  for (size_t i = 0; i < argc; i++)
-  {
-    printf("%s, ", argv[i]);
-  }printf("\n");
-  
-
   int id = atoi (argv[POOL_TBL_ID]);
   int conf_id = atoi (argv[POOL_TBL_CONF_ID]);
   int lease_flag = atoi (argv[POOL_TBL_LEASE_FLAG]);
@@ -227,6 +221,18 @@ getLeaseCallback (void *leasePtr, int argc, char **argv, char **col)
   lease->id = id;
   lease->lease_flag = lease_flag;
   lease->config = dhcpLeaseGetConfigById (conf_id);
+
+  if (lease->lease_flag == 0)
+    {
+      bzero (&lease->host, sizeof (lease->host));
+
+      bzero (&lease->ip, sizeof (lease->ip));
+
+      bzero (&lease->mac, sizeof (lease->mac));
+
+      return SQLITE_OK;
+    }
+
   strncpy (lease->host, argv[POOL_TBL_HOST], DHCP_LEASE_HOSTNAME_STR_MAX_LEN);
   strncpy (lease->ip, argv[POOL_TBL_IP], DHCP_LEASE_IP_STR_LEN + 1);
   strncpy (lease->mac, argv[POOL_TBL_MAC], DHCP_LEASE_MAC_STR_MAX_LEN);

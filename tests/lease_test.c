@@ -51,35 +51,35 @@ printLease (dhcpLeasePoolResult_t lease)
 void
 dhcpLeaseGetIpFromPoolTest()
 {
+  dhcpLeaseInit (FAKE_DATABASE_PATH);
+
   dhcpLeasePoolResult_t lease;
 
   bzero (&lease, sizeof (dhcpLeasePoolResult_t));
 
-  dhcpLeaseInit (FAKE_DATABASE_PATH);
-
   lease = dhcpLeaseGetIpFromPool (CLIENT_MAC_ADDERSS);
 
-  dhcpLeaseClose();
-
   printLease (lease);
+
+  dhcpLeaseClose();
 }
 
 void
 dhcpLeaseIpAddressTest()
 {
+  dhcpLeaseInit (FAKE_DATABASE_PATH);
+
   dhcpLeasePoolResult_t lease;
 
   int retval;
-
-  dhcpLeaseInit (FAKE_DATABASE_PATH);
 
   lease = dhcpLeaseGetIpFromPool (CLIENT_MAC_ADDERSS);
 
   retval = dhcpLeaseIpAddress (lease.id, CLIENT_MAC_ADDERSS, "ali");
 
-  dhcpLeaseClose();
-
   CU_ASSERT_TRUE (retval);
+  
+  dhcpLeaseClose();
 }
 
 void
@@ -117,14 +117,14 @@ dhcpLeaseMacAddressAlreadyExistsTest()
 void
 dhcpLeaseGetPoolByIdTest()
 {
+
   dhcpLeaseInit (FAKE_DATABASE_PATH);
 
   dhcpLeasePoolResult_t lease = dhcpLeasePoolGetById (4);
 
   printLease (lease);
-
+  
   dhcpLeaseClose();
-
 }
 
 void

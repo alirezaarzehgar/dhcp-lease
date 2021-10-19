@@ -1,7 +1,7 @@
 /**
  * @file lease_test.c
  * @author alirezaarzehgar (alirezaarzehgar82@gmail.com)
- * @brief
+ * @brief Incomplete and wrong test
  * @version 0.1
  * @date 2021-10-11
  *
@@ -9,8 +9,13 @@
  *
  */
 
+/**
+ *              TODO We should refactor this tests and improve cases
+ */
+
 #include "lease_test.h"
 #include <CUnit/CUnit.h>
+#include <time.h>
 
 #define CLIENT_MAC_ADDERSS  "d4:f2:76:d0:a4:0f"
 #define CLIENT_HOSTNAME     "ali"
@@ -19,6 +24,7 @@
 int
 initSuiteLease()
 {
+  srand (time (NULL));
   return 0;
 }
 
@@ -123,50 +129,26 @@ dhcpLeaseGetConfigByIdTest()
   /*  TODO dhcpLeaseGetConfigByIdTest */
 }
 
-#define BASE_GET_BY_X(function, value)   \
-  dhcpLeaseInit (FAKE_DATABASE_PATH);     \
-      \
-  dhcpLeasePoolResult_t lease = function (value);     \
-      \
-  printLease (lease);     \
-      \
-  dhcpLeaseClose();
-
 void
 dhcpLeasePoolGetByIdTest()
 {
-  dhcpLeaseInit (FAKE_DATABASE_PATH);
-  dhcpLeasePoolResult_t lease = dhcpLeasePoolGetById (-111);
-  printLease (lease);
-  dhcpLeaseClose();
+  BASE_GET_BY_X (dhcpLeasePoolGetById, rand() % MAX_LEASE);
 }
 
 void
 dhcpLeasePoolGetByMacTest()
 {
-  dhcpLeaseInit (FAKE_DATABASE_PATH);
-
-  dhcpLeasePoolResult_t lease = dhcpLeasePoolGetByMac (CLIENT_MAC_ADDERSS);
-
-  printLease (lease);
-
-  dhcpLeaseClose();
+  BASE_GET_BY_X (dhcpLeasePoolGetByMac, CLIENT_MAC_ADDERSS);
 }
 
 void
 dhcpLeasePoolGetByHostnameTest()
 {
-  dhcpLeaseInit (FAKE_DATABASE_PATH);
-
-  dhcpLeasePoolResult_t lease = dhcpLeasePoolGetByHostname (CLIENT_HOSTNAME);
-
-  printLease (lease);
-
-  dhcpLeaseClose();
+  BASE_GET_BY_X (dhcpLeasePoolGetByHostname, CLIENT_HOSTNAME);
 }
 
 void
 dhcpLeasePoolGetByIpTest()
 {
-  /*  TODO dhcpLeasePoolGetByIpTest */
+  BASE_GET_BY_X (dhcpLeasePoolGetByIp, "192.168.133.6");
 }

@@ -34,7 +34,8 @@ printLease (dhcpLeasePoolResult_t lease)
     "lease :\n"
     "\tid -> %d\n"
     "\tip -> %s\n"
-    "\tmac -> %s\n\n", lease.id, lease.ip, lease.mac);
+    "\thost -> %s\n"
+    "\tmac -> %s\n\n", lease.id, lease.ip, lease.host, lease.mac);
 
   printf ("configs : \n"
           "\tid -> %d\n"
@@ -153,7 +154,13 @@ dhcpLeasePoolGetByMacTest()
 void
 dhcpLeasePoolGetByHostnameTest()
 {
-  /*  TODO dhcpLeasePoolGetByHostnameTest */
+  dhcpLeaseInit (FAKE_DATABASE_PATH);
+
+  dhcpLeasePoolResult_t lease = dhcpLeasePoolGetByHostname ("ali");
+
+  printLease (lease);
+
+  dhcpLeaseClose();
 }
 
 void

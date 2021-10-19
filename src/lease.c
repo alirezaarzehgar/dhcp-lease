@@ -234,7 +234,7 @@ getLeaseCallback (void *leasePtr, int argc, char **argv, char **col)
     }
 
   strncpy (lease->host, argv[POOL_TBL_HOST], DHCP_LEASE_HOSTNAME_STR_MAX_LEN);
-  strncpy (lease->ip, argv[POOL_TBL_IP], DHCP_LEASE_IP_STR_LEN + 1);
+  strncpy (lease->ip, argv[POOL_TBL_IP], DHCP_LEASE_IP_STR_LEN);
   strncpy (lease->mac, argv[POOL_TBL_MAC], DHCP_LEASE_MAC_STR_MAX_LEN);
 
   return SQLITE_OK;

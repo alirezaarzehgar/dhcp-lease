@@ -31,6 +31,7 @@ void
 dhcpLeaseSqlBuilderGetLeaseById (POOL_PARAM_TBL_SQLPTR, int id)
 {
   SQL_BUILDER (
+    "SELECT  %s, %s, %s FROM %s WHERE %s = %d",
   {
     sprintf (sqlPtr, format, tbl.id, tbl.conf_id, tbl.ip, tbl.name, tbl.id, id);
   });
@@ -125,10 +126,14 @@ dhcpLeaseSqlBuilderPoolFindByX (POOL_PARAM_TBL_SQLPTR, char *condition)
   });
 }
 
-#define POOL_FIND_BY_X(fmt, filed, X, size)   \
-  char format[L (fmt) + L (tbl.filed)];   \
+#define POOL_FIND_BY_X(fmt, X, size)   \
+  char *format = malloc (     \
+                   L (format)     \
+                   + L (tbl.id)     \
+                   + size     \
+                 );   \
         \
-  sprintf (format, fmt, tbl.filed, X);      \
+  sprintf (format, fmt, tbl.name, X);      \
         \
   dhcpLeaseSqlBuilderPoolFindByX (tbl, sqlPtr, format);   \
 
@@ -138,7 +143,6 @@ dhcpLeaseSqlBuilderPoolFindById (POOL_PARAM_TBL_SQLPTR, int id)
   POOL_FIND_BY_X (
     "%s = %d",
     id,
-    id,
     9   /* 9 digit id */
   );
 }
@@ -147,8 +151,8 @@ void
 dhcpLeaseSqlBuilderPoolFindByMac (POOL_PARAM_TBL_SQLPTR, char *mac)
 {
   POOL_FIND_BY_X (
-    "%s = \"%s\"",
-    mac, mac,
+    "%s = %s",
+    mac,
     L (mac)
   );
 }
@@ -157,8 +161,8 @@ void
 dhcpLeaseSqlBuilderPoolFindByHostname (POOL_PARAM_TBL_SQLPTR, char *hostname)
 {
   POOL_FIND_BY_X (
-    "%s = \"%s\"",
-    host, hostname,
+    "%s = %s",
+    hostname,
     L (hostname)
   )
 }
@@ -167,8 +171,22 @@ void
 dhcpLeaseSqlBuilderPoolFindByIp (POOL_PARAM_TBL_SQLPTR, char *ip)
 {
   POOL_FIND_BY_X (
-    "%s = \"%s\"",
-    ip, ip,
+    "%s = %s",
+    ip,
     L (ip)
   );
+}
+
+void
+dhcpLeaseSqlBuilderPoolUpdate (POOL_PARAM_TBL_SQLPTR,
+                               dhcpLeasePoolResult_t lease)
+{
+  char format[] =
+    "UPDATE %s "        /* UPDATE pool  */
+    "SET %s = %d,"      /* SET conf_id = id */
+    " %s = \"%s\","     /* ip = "ip" */
+    " %s = \"%s\","     /* host = "host" */
+    " %s = \"%s\","     /* mac = "mac" */
+    " %s = %d "         /* lease_flag = 1 */
+    "WHERE %s = %d;";   /* WHERE id = id; */
 }

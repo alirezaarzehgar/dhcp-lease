@@ -108,4 +108,16 @@ int dhcpLeasePoolCount();
 
 int dhcpLeaseConfCount();
 
+bool dhcpLeaseSaveNewLease (dhcpLeasePoolResult_t lease);
+
+bool dhcpLeaseUpdateLease (dhcpLeasePoolResult_t lease);
+
+bool dhcpLeaseDeleteLeaseById (int id);
+
+bool dhcpLeaseSaveNewConfig (dhcpLeaseConfigResult_t conf);
+
+bool dhcpLeaseUpdateConfig (dhcpLeaseConfigResult_t conf);
+
+bool dhcpLeaseDeleteConfigById (int id);
+
 #endif // LEASE_H

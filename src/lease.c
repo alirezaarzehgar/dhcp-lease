@@ -352,3 +352,54 @@ dhcpLeaseInitConf()
 
   return retval == SQLITE_OK;
 }
+
+typedef void runAQueryCallback_t (void *tbl, char *sqlPtr, void *lease);
+
+#define runAQuery(function, tbl, data)      \
+  int retval;       \
+        \
+  char sql[MAX_QUERY_LEN];      \
+        \
+  DHCP_LEASE_CHECK_FOR_INIT (db, false);      \
+        \
+  function (tbl, sql, data);      \
+        \
+  retval = sqlite3_exec (db, sql, NULL, NULL, NULL);        \
+        \
+  return retval == SQLITE_OK;       \
+
+bool
+dhcpLeaseSaveNewLease (dhcpLeasePoolResult_t lease)
+{
+  runAQuery (dhcpLeaseSqlBuilderNewPool, PoolTbl, lease);
+}
+
+bool
+dhcpLeaseUpdateLease (dhcpLeasePoolResult_t lease)
+{
+  runAQuery (dhcpLeaseSqlBuilderPoolUpdate, PoolTbl, lease);
+}
+
+bool
+dhcpLeaseDeleteLeaseById (int id)
+{
+  runAQuery (dhcpLeaseSqlBuilderPoolDeleteById, PoolTbl, id);
+}
+
+bool
+dhcpLeaseSaveNewConfig (dhcpLeaseConfigResult_t conf)
+{
+  runAQuery (dhcpLeaseSqlBuilderNewConf, ConfigTbl, conf);
+}
+
+bool
+dhcpLeaseUpdateConfig (dhcpLeaseConfigResult_t conf)
+{
+  runAQuery (dhcpLeaseSqlBuilderConfUpdate, ConfigTbl, conf);
+}
+
+bool
+dhcpLeaseDeleteConfigById (int id)
+{
+  runAQuery (dhcpLeaseSqlBuilderConfigDeleteById, ConfigTbl, id);
+}

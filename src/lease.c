@@ -83,7 +83,7 @@ dhcpLeaseGetPoolById (unsigned int id)
 
     localLease->id = atoi (argv[0]);
 
-    localLease->config = dhcpLeaseGetConfigById (atoi (argv[1]));
+    localLease->config = dhcpLeaseGetConfigByUserId (atoi (argv[1]));
 
     strncpy (localLease->ip, argv[2], DHCP_LEASE_IP_STR_LEN);
 
@@ -100,7 +100,7 @@ dhcpLeaseGetPoolById (unsigned int id)
 }
 
 dhcpLeaseConfigResult_t
-dhcpLeaseGetConfigById (unsigned int id)
+dhcpLeaseGetConfigByUserId (unsigned int id)
 {
   int retval;
 
@@ -165,7 +165,7 @@ dhcpLeaseGetIpFromPool (char *mac)
 
     localLease->id = atoi (argv[0]);
 
-    localLease->config = dhcpLeaseGetConfigById (id);
+    localLease->config = dhcpLeaseGetConfigByUserId (id);
 
     strncpy (localLease->ip, argv[2], DHCP_LEASE_IP_STR_LEN);
 
@@ -220,7 +220,7 @@ getLeaseCallback (void *leasePtr, int argc, char **argv, char **col)
 
   lease->id = id;
   lease->lease_flag = lease_flag;
-  lease->config = dhcpLeaseGetConfigById (conf_id);
+  lease->config = dhcpLeaseGetConfigByUserId (conf_id);
 
   if (lease->lease_flag == 0)
     {

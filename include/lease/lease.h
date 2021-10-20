@@ -86,7 +86,7 @@ void dhcpLeaseClose();
 
 int dhcpLeaseMacAddressAlreadyExists (char *mac);
 
-dhcpLeaseConfigResult_t dhcpLeaseGetConfigById (unsigned int id);
+dhcpLeaseConfigResult_t dhcpLeaseGetConfigByUserId (unsigned int id);
 
 dhcpLeasePoolResult_t dhcpLeaseGetIpFromPool (char *mac);
 

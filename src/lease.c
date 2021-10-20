@@ -104,7 +104,7 @@ dhcpLeaseGetConfigByUserId (unsigned int id)
 {
   int retval;
 
-  dhcpLeaseConfigResult_t config;
+  DHCP_LEASE_DECLARE_AS_NULL (dhcpLeaseConfigResult_t, config);
 
   DHCP_LEASE_DECLARE_AS_NULL (dhcpLeaseConfigResult_t, nullConfig);
 
@@ -132,7 +132,7 @@ dhcpLeaseGetConfigByUserId (unsigned int id)
 
   bzero (&sql, sizeof (sql));
 
-  dhcpLeaseSqlBuilderGetConfigById (ConfigTbl, PoolTbl, sql, id);
+  dhcpLeaseSqlBuilderGetConfigByUserId (ConfigTbl, PoolTbl, sql, id);
 
   retval = sqlite3_exec (db, sql, callback, &config, NULL);
 
@@ -220,7 +220,7 @@ getLeaseCallback (void *leasePtr, int argc, char **argv, char **col)
 
   lease->id = id;
   lease->lease_flag = lease_flag;
-  lease->config = dhcpLeaseGetConfigByUserId (conf_id);
+  lease->config = dhcpLeaseGetConfigById (conf_id);
 
   if (lease->lease_flag == 0)
     {
@@ -402,4 +402,38 @@ bool
 dhcpLeaseDeleteConfigById (int id)
 {
   runAQuery (dhcpLeaseSqlBuilderConfigDeleteById, ConfigTbl, id);
+}
+
+dhcpLeaseConfigResult_t
+dhcpLeaseGetConfigById (int id)
+{
+  char sql[MAX_QUERY_LEN];
+
+  DHCP_LEASE_DECLARE_AS_NULL (dhcpLeaseConfigResult_t, conf);
+
+  int retval;
+
+  int
+  callback (void *config, int argc, char **argv, char **col)
+  {
+    dhcpLeaseConfigResult_t *localConf = (dhcpLeaseConfigResult_t *)config;
+
+    localConf->id = atoi (argv[0]);
+
+    strncpy (localConf->mask, argv[1], DHCP_LEASE_SUBNET_STR_LEN);
+
+    strncpy (localConf->router, argv[2], DHCP_LEASE_IP_STR_LEN);
+
+    strncpy (localConf->domain, argv[3], DHCP_LEASE_DOMAIN_STR_MAX_LEN);
+
+    localConf->lease_time = atoi (argv[4]);
+
+    return SQLITE_OK;
+  }
+
+  dhcpLeaseSqlBuilderConfFindById (ConfigTbl, sql, id);
+
+  sqlite3_exec (db, sql, callback, &conf, NULL);
+
+  return conf;
 }

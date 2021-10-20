@@ -132,12 +132,6 @@ dhcpLeaseMacAddressAlreadyExistsTest()
 }
 
 void
-dhcpLeaseGetConfigByIdTest()
-{
-  /*  TODO dhcpLeaseGetConfigByIdTest */
-}
-
-void
 dhcpLeasePoolGetByIdTest()
 {
   BASE_GET_BY_X (dhcpLeasePoolGetById, rand() % MAX_LEASE);
@@ -391,4 +385,23 @@ dhcpLeaseDeleteConfigByIdTest()
   });
 
   CU_ASSERT_TRUE (retval);
+}
+
+void
+dhcpLeaseGetConfigByIdTest()
+{
+  dhcpLeaseConfigResult_t config;
+
+  CODE_BEHINDE_INITCLOSE_DB (
+  {
+    config = dhcpLeaseGetConfigById (3);
+  });
+
+  printf ("configs : \n"
+          "\tid -> %d\n"
+          "\tmask -> %s\n"
+          "\trouter -> %s\n"
+          "\tdomain -> %s \n"
+          "\tlease_time -> %d\n", config.id, config.mask, config.router, config.domain,
+          config.lease_time);
 }

@@ -32,8 +32,9 @@ dhcpLeaseSqlBuilderGetLeaseById (POOL_PARAM_TBL_SQLPTR, int id)
 }
 
 void
-dhcpLeaseSqlBuilderGetConfigById (struct configTbl ctbl, struct poolTbl ptbl,
-                                  char *sqlPtr, int id)
+dhcpLeaseSqlBuilderGetConfigByUserId (struct configTbl ctbl,
+                                      struct poolTbl ptbl,
+                                      char *sqlPtr, int id)
 {
   sprintf (sqlPtr,
            "SELECT %s, %s, %s, %s, %s FROM %s WHERE %s = (SELECT %s FROM %s WHERE %s = %d);",
@@ -107,6 +108,14 @@ dhcpLeaseSqlBuilderPoolFindById (POOL_PARAM_TBL_SQLPTR, int id)
     id,
     9   /* 9 digit id */
   );
+}
+
+void
+dhcpLeaseSqlBuilderConfFindById (CONFIG_PARAM_TBL_SQLPTR, int id)
+{
+  sprintf (sqlPtr, "SELECT %s, %s, %s, %s, %s FROM %s WHERE %s = %d;\n\n",
+           tbl.id, tbl.mask, tbl.router, tbl.domain, tbl.lease_time, tbl.name, tbl.id,
+           id);
 }
 
 void

@@ -120,4 +120,6 @@ bool dhcpLeaseUpdateConfig (dhcpLeaseConfigResult_t conf);
 
 bool dhcpLeaseDeleteConfigById (int id);
 
+dhcpLeaseConfigResult_t dhcpLeaseGetConfigById (int id);
+
 #endif // LEASE_H

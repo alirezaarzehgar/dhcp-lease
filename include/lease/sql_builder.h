@@ -21,7 +21,7 @@ void dhcpLeaseSqlBuilderFindIdByMac (struct poolTbl tbl, char *sqlPtr,
 void dhcpLeaseSqlBuilderGetLeaseById (struct poolTbl tbl, char *sqlPtr,
                                       int id);
 
-void dhcpLeaseSqlBuilderGetConfigById (struct configTbl ctbl,
+void dhcpLeaseSqlBuilderGetConfigByUserId (struct configTbl ctbl,
                                        struct poolTbl ptbl, char *sqlPtr, int id);
 
 void dhcpLeaseSqlBuilderGetNonLeasedIp (struct poolTbl tbl, char *sqlPtr);
@@ -61,5 +61,8 @@ void dhcpLeaseSqlBuilderNewPool (POOL_PARAM_TBL_SQLPTR,
 
 void dhcpLeaseSqlBuilderNewConf (CONFIG_PARAM_TBL_SQLPTR,
                                  dhcpLeaseConfigResult_t conf);
+
+void
+dhcpLeaseSqlBuilderConfFindById (CONFIG_PARAM_TBL_SQLPTR, int id);
 
 #endif // LEASE_SQL_BUILDER_H

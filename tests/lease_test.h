@@ -66,4 +66,6 @@ void dhcpLeaseUpdateConfigTest();
 
 void dhcpLeaseDeleteConfigByIdTest();
 
+void dhcpLeaseGetConfigByIdTest();
+
 #endif // TESTS_LEASE

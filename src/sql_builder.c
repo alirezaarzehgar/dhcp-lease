@@ -9,6 +9,10 @@
  *
  */
 
+/**
+ * TODO       All of query builders should hanve validator
+ */
+
 #include "lease/lease.h"
 #include "lease/sql_builder.h"
 
@@ -139,4 +143,100 @@ void
 dhcpLeaseSqlBuilderXCount (void *tbl, char *sqlPtr)
 {
   sprintf (sqlPtr, "SELECT count() FROM %s;", ((commonTbl_t *)tbl)->name);
+}
+
+
+void
+dhcpLeaseSqlBuilderPoolUpdate (POOL_PARAM_TBL_SQLPTR,
+                               dhcpLeasePoolResult_t lease)
+{
+  sprintf (sqlPtr,
+           "UPDATE %s "        /* UPDATE name  */
+           "SET %s = %d,"      /* SET conf_id = id */
+           " %s = \"%s\","     /* ip = "ip" */
+           " %s = \"%s\","     /* host = "host" */
+           " %s = \"%s\","     /* mac = "mac" */
+           " %s = %d "         /* lease_flag = 1 */
+           "WHERE %s = %d;"   /* WHERE id = id; */
+           , tbl.name, tbl.conf_id, lease.config.id, tbl.ip, lease.ip, tbl.host,
+           lease.host, tbl.mac, lease.mac, tbl.lease_flag, lease.lease_flag, tbl.id,
+           lease.id);
+}
+
+void
+dhcpLeaseSqlBuilderConfUpdate (CONFIG_PARAM_TBL_SQLPTR,
+                               dhcpLeaseConfigResult_t conf)
+{
+  sprintf (sqlPtr,
+           "UPDATE %s "          /* UPDATE name */
+           "SET %s = \"%s\", "   /* mask = "mask" */
+           " %s = \"%s\", "      /* router = "router" */
+           " %s = \"%s\", "      /* domain = "domain" */
+           " %s = %d "           /* lease_time = lease_time */
+           "WHERE %s = %d;"      /* WHERE id = id*/
+           , tbl.name, tbl.mask, conf.mask, tbl.router, conf.router, tbl.domain,
+           conf.domain, tbl.lease_time, conf.lease_time, tbl.id, conf.id);
+}
+
+void
+dhcpLeaseSqlBuilderNewPool (POOL_PARAM_TBL_SQLPTR,
+                            dhcpLeasePoolResult_t lease)
+{
+  sprintf (sqlPtr,
+           "INSERT INTO %s "   /* INSERT INTO */
+           "("
+           "%s, "             /* conf_id */
+           "%s, "             /* ip */
+           "%s, "             /* host */
+           "%s, "             /* mac */
+           "%s"               /* lease_flag */
+           ")"
+           " VALUES "
+           "("
+           "%d, "          /* id */
+           "\"%s\", "      /* "ip" */
+           "\"%s\", "      /* "host" */
+           "\"%s\", "      /* "mac" */
+           "%d"            /* lease_flag */
+           ");"
+           , tbl.name, tbl.conf_id, tbl.ip, tbl.host, tbl.mac, tbl.lease_flag,
+           lease.config.id, lease.ip, lease.host, lease.mac, lease.lease_flag, lease.id);
+}
+
+void
+dhcpLeaseSqlBuilderNewConf (CONFIG_PARAM_TBL_SQLPTR,
+                            dhcpLeaseConfigResult_t conf)
+{
+  sprintf (sqlPtr,
+           "INSERT INTO %s "   /* INSERT INTO */
+           "("
+           "%s, "             /* mask */
+           "%s, "             /* router */
+           "%s, "             /* domain */
+           "%s"             /* lease_time */
+           ")"
+           " VALUES "
+           "("
+           "\"%s\", "      /* mask" */
+           "\"%s\", "      /* router" */
+           "\"%s\", "      /* domain" */
+           "%d"           /* lease_time */
+           ");"
+           , tbl.name, tbl.mask, tbl.router, tbl.domain, tbl.lease_time, conf.mask,
+           conf.router, conf.domain, conf.lease_time);
+}
+
+#define BASE_DELETE_FORMAT           "DELETE FROM %s WHERE %s = %d;"
+
+void
+dhcpLeaseSqlBuilderPoolDeleteById (POOL_PARAM_TBL_SQLPTR, int id)
+{
+  sprintf (sqlPtr, BASE_DELETE_FORMAT, tbl.name, tbl.id, id);
+}
+
+void
+dhcpLeaseSqlBuilderConfigDeleteById (CONFIG_PARAM_TBL_SQLPTR,
+                                     int id)
+{
+  sprintf (sqlPtr, BASE_DELETE_FORMAT, tbl.name, tbl.id, id);
 }

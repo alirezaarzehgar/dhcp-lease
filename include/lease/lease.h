@@ -75,8 +75,9 @@ typedef struct
 
 typedef struct
 {
-  char name[7];
+  char name[8];
   char id[3];
+  char pad[4];
 } commonTbl_t;
 
 int dhcpLeaseInit (const char *path);

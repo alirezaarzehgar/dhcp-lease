@@ -279,3 +279,116 @@ dhcpLeaseSqlBuilderNewConfTest()
   CU_ASSERT_STRING_EQUAL (sql,
                           "INSERT INTO config (mask, router, domain, lease_time) VALUES (\"255.255.255.0\", \"ip\", \"bs.com\", 500);");
 }
+
+void
+dhcpLeaseSaveNewLeaseTest()
+{
+  int retval;
+
+  dhcpLeasePoolResult_t lease =
+  {
+    .mac = "some_mac",
+    .host = "ali", .lease_flag = 1,
+    .ip = "ip", .config = {
+      .id = 1
+    }
+  };
+
+  CODE_BEHINDE_INITCLOSE_DB (
+  {
+    retval = dhcpLeaseSaveNewLease (lease);
+  });
+
+  CU_ASSERT_TRUE (retval);
+}
+
+void
+dhcpLeaseUpdateLeaseTest()
+{
+  int retval;
+
+  dhcpLeasePoolResult_t lease =
+  {
+    .id = 1, .mac = "some_mac",
+    .host = "ali", .lease_flag = 1,
+    .ip = "ip", .config = {
+      .id = 1
+    }
+  };
+
+  CODE_BEHINDE_INITCLOSE_DB (
+  {
+    retval = dhcpLeaseUpdateLease (lease);
+  });
+
+  CU_ASSERT_TRUE (retval);
+}
+
+void
+dhcpLeaseDeleteLeaseByIdTest()
+{
+  int retval;
+
+  CODE_BEHINDE_INITCLOSE_DB (
+  {
+    retval = dhcpLeaseDeleteLeaseById (dhcpLeasePoolCount());
+  });
+
+  CU_ASSERT_TRUE (retval);
+}
+
+void
+dhcpLeaseSaveNewConfigTest()
+{
+  int retval;
+
+  dhcpLeaseConfigResult_t conf =
+  {
+    .mask = "255.255.255.0",
+    .router = "ip",
+    .domain = "bs.com",
+    .lease_time = 500,
+  };
+
+  CODE_BEHINDE_INITCLOSE_DB (
+  {
+    retval = dhcpLeaseSaveNewConfig (conf);
+  });
+
+  CU_ASSERT_TRUE (retval);
+}
+
+void
+dhcpLeaseUpdateConfigTest()
+{
+  int retval;
+
+  dhcpLeaseConfigResult_t conf =
+  {
+    .id = 1,
+    .mask = "255.255.255.0",
+    .router = "ip",
+    .domain = "bs.com",
+    .lease_time = 500,
+  };
+
+  CODE_BEHINDE_INITCLOSE_DB (
+  {
+    retval = dhcpLeaseUpdateConfig (conf);
+  });
+
+  CU_ASSERT_TRUE (retval);
+}
+
+void
+dhcpLeaseDeleteConfigByIdTest()
+{
+  int retval;
+
+  CODE_BEHINDE_INITCLOSE_DB (
+  {
+    retval = dhcpLeaseDeleteLeaseById (dhcpLeaseDeleteConfigById (1));
+  });
+
+  CU_ASSERT_TRUE (retval);
+}

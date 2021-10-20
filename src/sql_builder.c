@@ -12,30 +12,18 @@
 #include "lease/lease.h"
 #include "lease/sql_builder.h"
 
-#define SQL_BUILDER(fmt, size, fprintfHandler)   \
+#define SQL_BUILDER(fmt, fprintfHandler)   \
   char format[] = fmt;   \
         \
-  char *sql = (char *)malloc (      \
-                size      \
-              );      \
-        \
-  fprintfHandler;      \
-      \
-  memcpy (sqlPtr, sql, MAX_QUERY_LEN);      \
-        \
-  free (sql);
+  fprintfHandler;
 
 void
 dhcpLeaseSqlBuilderFindIdByMac (POOL_PARAM_TBL_SQLPTR, char *mac)
 {
   SQL_BUILDER (
     "SELECT %s FROM %s WHERE %s = \"%s\";",
-    L (format)
-    + L (tbl.id)
-    + L (tbl.name)
-    + L (tbl.mac),
   {
-    sprintf (sql, format, tbl.id, tbl.name, tbl.mac, mac);
+    sprintf (sqlPtr, format, tbl.id, tbl.name, tbl.mac, mac);
   });
 }
 
@@ -43,16 +31,9 @@ void
 dhcpLeaseSqlBuilderGetLeaseById (POOL_PARAM_TBL_SQLPTR, int id)
 {
   SQL_BUILDER (
-    "SELECT  %s, %s, %s FROM %s WHERE %s = %d;\n\n",
-    L (format)
-    + L (tbl.id)
-    + L (tbl.conf_id)
-    + L (tbl.ip)
-    + L (tbl.name)
-    + L (tbl.id)
-    + 9   /* 9 digit id */,
+    "SELECT  %s, %s, %s FROM %s WHERE %s = %d",
   {
-    sprintf (sql, format, tbl.id, tbl.conf_id, tbl.ip, tbl.name, tbl.id, id);
+    sprintf (sqlPtr, format, tbl.id, tbl.conf_id, tbl.ip, tbl.name, tbl.id, id);
   });
 }
 
@@ -63,20 +44,8 @@ dhcpLeaseSqlBuilderGetConfigById (struct configTbl ctbl, struct poolTbl ptbl,
   SQL_BUILDER (
     "SELECT %s, %s, %s, %s, %s FROM %s WHERE %s = "
     "(SELECT %s FROM %s WHERE %s = %d);",
-    L (format)
-    + L (ctbl.id)
-    + L (ctbl.mask)
-    + L (ctbl.router)
-    + L (ctbl.domain)
-    + L (ctbl.lease_time)
-    + L (ctbl.name)
-    + L (ctbl.id)
-    + L (ptbl.id)
-    + L (ptbl.name)
-    + L (ptbl.id)
-    + 9   /* 9 digit id */,
   {
-    sprintf (sql, format, ctbl.id, ctbl.mask, ctbl.router, ctbl.domain,
+    sprintf (sqlPtr, format, ctbl.id, ctbl.mask, ctbl.router, ctbl.domain,
              ctbl.lease_time, ctbl.name, ctbl.id, ptbl.id, ptbl.name, ptbl.id, id);
   });
 }
@@ -86,14 +55,8 @@ dhcpLeaseSqlBuilderGetNonLeasedIp (POOL_PARAM_TBL_SQLPTR)
 {
   SQL_BUILDER (
     "SELECT %s, %s, %s FROM %s WHERE %s = 0 LIMIT 1;",
-    L (format)
-    + L (tbl.id)
-    + L (tbl.conf_id)
-    + L (tbl.ip)
-    + L (tbl.name)
-    + L (tbl.lease_flag),
   {
-    sprintf (sql, format, tbl.id, tbl.conf_id, tbl.ip, tbl.name, tbl.lease_flag);
+    sprintf (sqlPtr, format, tbl.id, tbl.conf_id, tbl.ip, tbl.name, tbl.lease_flag);
   });
 }
 
@@ -111,17 +74,8 @@ dhcpLeaseSqlBuilderLeaseIp (POOL_PARAM_TBL_SQLPTR, char *mac, char *host,
 
   SQL_BUILDER (
     "UPDATE %s SET %s = \"%s\", %s = %s, %s = 1 WHERE %s = %d;",
-    L (format)
-    + L (tbl.name)
-    + L (tbl.mac)
-    + DHCP_LEASE_MAC_STR_MAX_LEN + 2 /* +2 len for double qoutes ( "query" ) */
-    + L (tbl.host) + 2 /* +2 len for double qoutes ( "query" ) */
-    + DHCP_LEASE_HOSTNAME_STR_MAX_LEN
-    + 2 /* +2 len for double qoutes for hostname ( "query" ) */
-    + L (tbl.id)
-    + 9   /* 9 digit id */,
   {
-    sprintf (sql, format, tbl.name, tbl.mac, mac, tbl.host, hostField,
+    sprintf (sqlPtr, format, tbl.name, tbl.mac, mac, tbl.host, hostField,
              tbl.lease_flag, tbl.id, id);
   });
 }
@@ -137,15 +91,8 @@ dhcpLeaseSqlBuilderInitConfTable (struct configTbl tbl, char *sqlPtr)
     "   %s TEXT NOT NULL,\n"
     "   %s INTEGER NOT NULL DEFAULT 600\n"
     ");\n\n",
-    L (format)
-    + L (tbl.name)
-    + L (tbl.id)
-    + L (tbl.mask)
-    + L (tbl.router)
-    + L (tbl.domain)
-    + L (tbl.lease_time),
   {
-    sprintf (sql, format, tbl.name, tbl.id, tbl.mask, tbl.router, tbl.domain,
+    sprintf (sqlPtr, format, tbl.name, tbl.id, tbl.mask, tbl.router, tbl.domain,
              tbl.lease_time);
   });
 }
@@ -163,16 +110,8 @@ dhcpLeaseSqlBuilderInitPoolTable (POOL_PARAM_TBL_SQLPTR)
     "   %s INTEGER NOT NULL DEFAULT 0,\n"
     "   FOREIGN KEY (conf_id) REFERENCES config(id)\n"
     ");\n\n",
-    L (format)
-    + L (tbl.name)
-    + L (tbl.id)
-    + L (tbl.conf_id)
-    + L (tbl.ip)
-    + L (tbl.host)
-    + L (tbl.mac)
-    + L (tbl.lease_flag),
   {
-    sprintf (sql, format, tbl.name, tbl.id, tbl.conf_id, tbl.ip, tbl.host, tbl.mac,
+    sprintf (sqlPtr, format, tbl.name, tbl.id, tbl.conf_id, tbl.ip, tbl.host, tbl.mac,
              tbl.lease_flag);
   });
 }
@@ -182,18 +121,19 @@ dhcpLeaseSqlBuilderPoolFindByX (POOL_PARAM_TBL_SQLPTR, char *condition)
 {
   SQL_BUILDER (
     "SELECT * FROM %s WHERE %s;\n\n",
-    L (format)
-    + L (tbl.name)
-    + L (condition),
   {
-    sprintf (sql, format, tbl.name, condition);
+    sprintf (sqlPtr, format, tbl.name, condition);
   });
 }
 
-#define POOL_FIND_BY_X(fmt, filed, X, size)   \
-  char format[L (fmt) + L (tbl.filed)];   \
+#define POOL_FIND_BY_X(fmt, X, size)   \
+  char *format = malloc (     \
+                   L (format)     \
+                   + L (tbl.id)     \
+                   + size     \
+                 );   \
         \
-  sprintf (format, fmt, tbl.filed, X);      \
+  sprintf (format, fmt, tbl.name, X);      \
         \
   dhcpLeaseSqlBuilderPoolFindByX (tbl, sqlPtr, format);   \
 
@@ -203,7 +143,6 @@ dhcpLeaseSqlBuilderPoolFindById (POOL_PARAM_TBL_SQLPTR, int id)
   POOL_FIND_BY_X (
     "%s = %d",
     id,
-    id,
     9   /* 9 digit id */
   );
 }
@@ -212,8 +151,8 @@ void
 dhcpLeaseSqlBuilderPoolFindByMac (POOL_PARAM_TBL_SQLPTR, char *mac)
 {
   POOL_FIND_BY_X (
-    "%s = \"%s\"",
-    mac, mac,
+    "%s = %s",
+    mac,
     L (mac)
   );
 }
@@ -222,8 +161,8 @@ void
 dhcpLeaseSqlBuilderPoolFindByHostname (POOL_PARAM_TBL_SQLPTR, char *hostname)
 {
   POOL_FIND_BY_X (
-    "%s = \"%s\"",
-    host, hostname,
+    "%s = %s",
+    hostname,
     L (hostname)
   )
 }
@@ -232,8 +171,8 @@ void
 dhcpLeaseSqlBuilderPoolFindByIp (POOL_PARAM_TBL_SQLPTR, char *ip)
 {
   POOL_FIND_BY_X (
-    "%s = \"%s\"",
-    ip, ip,
+    "%s = %s",
+    ip,
     L (ip)
   );
 }
@@ -252,4 +191,18 @@ dhcpLeaseSqlBuilderXCount (void *tbl, char *sqlPtr)
   memcpy (sqlPtr, sql, MAX_QUERY_LEN);
 
   free (sql);
+}
+
+void
+dhcpLeaseSqlBuilderPoolUpdate (POOL_PARAM_TBL_SQLPTR,
+                               dhcpLeasePoolResult_t lease)
+{
+  char format[] =
+    "UPDATE %s "        /* UPDATE pool  */
+    "SET %s = %d,"      /* SET conf_id = id */
+    " %s = \"%s\","     /* ip = "ip" */
+    " %s = \"%s\","     /* host = "host" */
+    " %s = \"%s\","     /* mac = "mac" */
+    " %s = %d "         /* lease_flag = 1 */
+    "WHERE %s = %d;";   /* WHERE id = id; */
 }

@@ -5,6 +5,15 @@
 
 #define FAKE_DATABASE_PATH                      "databases/dhcpd.db"
 
+#define BASE_GET_BY_X(function, value)   \
+  dhcpLeaseInit (FAKE_DATABASE_PATH);     \
+      \
+  dhcpLeasePoolResult_t lease = function (value);     \
+      \
+  printLease (lease);     \
+      \
+  dhcpLeaseClose();
+
 int initSuiteLease();
 
 int cleanupSuiteLease();
@@ -16,5 +25,21 @@ void dhcpLeaseIpAddressTest();
 void dhcpLeaseInitConfTest();
 
 void dhcpLeaseInitPoolTest();
+
+void dhcpLeaseMacAddressAlreadyExistsTest();
+
+void dhcpLeaseGetConfigByIdTest();
+
+void dhcpLeasePoolGetByIdTest();
+
+void dhcpLeasePoolGetByMacTest();
+
+void dhcpLeasePoolGetByHostnameTest();
+
+void dhcpLeasePoolGetByIpTest();
+
+void dhcpLeasePoolCountTest();
+
+void dhcpLeaseConfCountTest();
 
 #endif // TESTS_LEASE

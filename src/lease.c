@@ -189,22 +189,117 @@ dhcpLeaseGetIpFromPool (char *mac)
   return lease;
 }
 
+#define GET_POOL_BY_X_PATTERN(function, value)     \
+  int retval;     \
+      \
+  DHCP_LEASE_DECLARE_AS_NULL(dhcpLeasePoolResult_t, lease);    \
+    \
+  char sql[MAX_QUERY_LEN];    \
+      \
+  DHCP_LEASE_DECLARE_AS_NULL (dhcpLeasePoolResult_t, nullLease);      \
+      \
+  DHCP_LEASE_CHECK_FOR_INIT (db, nullLease);      \
+      \
+  function (PoolTbl, sql, value);     \
+      \
+  retval = sqlite3_exec (db, sql, getLeaseCallback, &lease, NULL);    \
+      \
+  DHCP_LEASE_SQLITE_FAILURE (retval, nullLease);      \
+      \
+  return lease
+
+
+int
+getLeaseCallback (void *leasePtr, int argc, char **argv, char **col)
+{
+  dhcpLeasePoolResult_t *lease = (dhcpLeasePoolResult_t *)leasePtr;
+
+  int id = atoi (argv[POOL_TBL_ID]);
+  int conf_id = atoi (argv[POOL_TBL_CONF_ID]);
+  int lease_flag = atoi (argv[POOL_TBL_LEASE_FLAG]);
+
+  lease->id = id;
+  lease->lease_flag = lease_flag;
+  lease->config = dhcpLeaseGetConfigById (conf_id);
+
+  if (lease->lease_flag == 0)
+    {
+      bzero (&lease->host, sizeof (lease->host));
+
+      strncpy (lease->ip, argv[POOL_TBL_IP], DHCP_LEASE_IP_STR_LEN);
+
+      bzero (&lease->mac, sizeof (lease->mac));
+
+      return SQLITE_OK;
+    }
+
+  strncpy (lease->host, argv[POOL_TBL_HOST], DHCP_LEASE_HOSTNAME_STR_MAX_LEN);
+  strncpy (lease->ip, argv[POOL_TBL_IP], DHCP_LEASE_IP_STR_LEN);
+  strncpy (lease->mac, argv[POOL_TBL_MAC], DHCP_LEASE_MAC_STR_MAX_LEN);
+
+  return SQLITE_OK;
+}
+
 dhcpLeasePoolResult_t
 dhcpLeasePoolGetById (int id)
 {
-  /* TODO */
+  GET_POOL_BY_X_PATTERN (dhcpLeaseSqlBuilderPoolFindById, id);
 }
 
 dhcpLeasePoolResult_t
 dhcpLeasePoolGetByMac (char *mac)
 {
-  /* TODO */
+  GET_POOL_BY_X_PATTERN (dhcpLeaseSqlBuilderPoolFindByMac, mac);
 }
 
 dhcpLeasePoolResult_t
 dhcpLeasePoolGetByHostname (char *hostname)
 {
-  /* TODO */
+  GET_POOL_BY_X_PATTERN (dhcpLeaseSqlBuilderPoolFindByHostname, hostname);
+}
+
+dhcpLeasePoolResult_t
+dhcpLeasePoolGetByIp (char *ip)
+{
+  GET_POOL_BY_X_PATTERN (dhcpLeaseSqlBuilderPoolFindByIp, ip);
+}
+
+int
+dhcpLeaseXCount (void *tbl)
+{
+  int retval;
+
+  char sql[MAX_QUERY_LEN];
+
+  int count;
+
+  dhcpLeaseSqlBuilderXCount (tbl, sql);
+
+  int callback (void *count, int argc, char **argv, char **col)
+  {
+    int *c = (int *)count;
+
+    if (argv[0] != NULL)
+      *c = atoi (argv[0]);
+
+    return SQLITE_OK;
+  }
+
+  retval = sqlite3_exec (db, sql, callback, &count, NULL);
+
+  return count;
+}
+
+int
+dhcpLeasePoolCount()
+{
+  return dhcpLeaseXCount ((void *)&PoolTbl);
+}
+
+int
+dhcpLeaseConfCount()
+{
+  return dhcpLeaseXCount ((void *)&ConfigTbl);
 }
 
 bool

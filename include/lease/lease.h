@@ -32,6 +32,15 @@
   if (db == NULL)   \
     return valueForReturn;
 
+enum dhcpLeaseStandarPoolTbl
+{
+  POOL_TBL_ID,
+  POOL_TBL_CONF_ID,
+  POOL_TBL_IP,
+  POOL_TBL_HOST,
+  POOL_TBL_MAC,
+  POOL_TBL_LEASE_FLAG,
+};
 
 typedef struct
 {
@@ -63,6 +72,13 @@ typedef struct
 
 } dhcpLeasePoolResult_t;
 
+
+typedef struct
+{
+  char name[7];
+  char id[3];
+} commonTbl_t;
+
 int dhcpLeaseInit (const char *path);
 
 void dhcpLeaseClose();
@@ -79,10 +95,16 @@ dhcpLeasePoolResult_t dhcpLeasePoolGetByMac (char *mac);
 
 dhcpLeasePoolResult_t dhcpLeasePoolGetByHostname (char *hostname);
 
+dhcpLeasePoolResult_t dhcpLeasePoolGetByIp (char *ip);
+
 bool dhcpLeaseIpAddress (unsigned int id, const char *mac, const char *host);
 
 bool dhcpLeaseInitPool();
 
 bool dhcpLeaseInitConf();
+
+int dhcpLeasePoolCount();
+
+int dhcpLeaseConfCount();
 
 #endif // LEASE_H

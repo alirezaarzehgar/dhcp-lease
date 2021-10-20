@@ -8,8 +8,8 @@
 #if !defined(LEASE_SQL_BUILDER_H)
 #define LEASE_SQL_BUILDER_H
 
-#define MAX_QUERY_LEN                500
-#define L(var)                       strlen(var)
+#define MAX_QUERY_LEN                1000
+#define L(var)                       (strlen(var) + (1))
 
 /* POOL_PARAM_{param1}_{param2}_{param-n} */
 #define POOL_PARAM_TBL_SQLPTR      struct poolTbl tbl, char *sqlPtr
@@ -42,5 +42,7 @@ void dhcpLeaseSqlBuilderPoolFindByHostname (POOL_PARAM_TBL_SQLPTR,
     char *hostname);
 
 void dhcpLeaseSqlBuilderPoolFindByIp (POOL_PARAM_TBL_SQLPTR, char *ip);
+
+void dhcpLeaseSqlBuilderXCount (void *tbl, char *sqlPtr);
 
 #endif // LEASE_SQL_BUILDER_H

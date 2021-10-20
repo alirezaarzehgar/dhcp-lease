@@ -13,6 +13,7 @@
 
 /* POOL_PARAM_{param1}_{param2}_{param-n} */
 #define POOL_PARAM_TBL_SQLPTR      struct poolTbl tbl, char *sqlPtr
+#define CONFIG_PARAM_TBL_SQLPTR    struct configTbl tbl, char *sqlPtr
 
 void dhcpLeaseSqlBuilderFindIdByMac (struct poolTbl tbl, char *sqlPtr,
                                      char *mac);
@@ -44,5 +45,21 @@ void dhcpLeaseSqlBuilderPoolFindByHostname (POOL_PARAM_TBL_SQLPTR,
 void dhcpLeaseSqlBuilderPoolFindByIp (POOL_PARAM_TBL_SQLPTR, char *ip);
 
 void dhcpLeaseSqlBuilderXCount (void *tbl, char *sqlPtr);
+
+void dhcpLeaseSqlBuilderPoolUpdate (POOL_PARAM_TBL_SQLPTR,
+                                    dhcpLeasePoolResult_t lease);
+
+void dhcpLeaseSqlBuilderConfUpdate (CONFIG_PARAM_TBL_SQLPTR,
+                                    dhcpLeaseConfigResult_t conf);
+
+void dhcpLeaseSqlBuilderPoolDeleteById (POOL_PARAM_TBL_SQLPTR, int id);
+
+void dhcpLeaseSqlBuilderConfigDeleteById (CONFIG_PARAM_TBL_SQLPTR, int id);
+
+void dhcpLeaseSqlBuilderNewPool (POOL_PARAM_TBL_SQLPTR,
+                                 dhcpLeasePoolResult_t lease);
+
+void dhcpLeaseSqlBuilderNewConf (CONFIG_PARAM_TBL_SQLPTR,
+                                 dhcpLeaseConfigResult_t conf);
 
 #endif // LEASE_SQL_BUILDER_H

@@ -42,4 +42,16 @@ void dhcpLeasePoolCountTest();
 
 void dhcpLeaseConfCountTest();
 
+void dhcpLeaseSqlBuilderPoolUpdateTest();
+
+void dhcpLeaseSqlBuilderConfUpdateTest();
+
+void dhcpLeaseSqlBuilderPoolDeleteByIdTest();
+
+void dhcpLeaseSqlBuilderConfigDeleteByIdTest();
+
+void dhcpLeaseSqlBuilderNewPoolTest();
+
+void dhcpLeaseSqlBuilderNewConfTest();
+
 #endif // TESTS_LEASE

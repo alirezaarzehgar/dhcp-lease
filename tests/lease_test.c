@@ -14,6 +14,7 @@
  */
 
 #include "lease_test.h"
+#include "lease/sql_builder.h"
 #include <CUnit/CUnit.h>
 #include <time.h>
 
@@ -176,4 +177,105 @@ dhcpLeaseConfCountTest()
   {
     CU_ASSERT_EQUAL (dhcpLeaseConfCount(), 5);
   });
+}
+
+
+void
+dhcpLeaseSqlBuilderPoolUpdateTest()
+{
+  dhcpLeasePoolResult_t lease =
+  {
+    .id = 1, .mac = "some_mac",
+    .host = "ali", .lease_flag = 1,
+    .ip = "ip", .config = {
+      .id = 1
+    }
+  };
+
+  char sql[MAX_QUERY_LEN];
+
+  dhcpLeaseSqlBuilderPoolUpdate (PoolTbl, sql, lease);
+
+  CU_ASSERT_STRING_EQUAL (sql,
+                          "UPDATE pool SET conf_id = 1, ip = \"ip\", host = \"ali\", mac = \"some_mac\", lease_flag = 1 WHERE id = 1;");
+}
+
+void
+dhcpLeaseSqlBuilderConfUpdateTest()
+{
+  dhcpLeaseConfigResult_t conf =
+  {
+    .id = 1,
+    .mask = "255.255.255.0",
+    .router = "ip",
+    .domain = "bs.com",
+    .lease_time = 500,
+  };
+
+  char sql[MAX_QUERY_LEN];
+
+  dhcpLeaseSqlBuilderConfUpdate (ConfigTbl, sql, conf);
+
+  CU_ASSERT_STRING_EQUAL (sql,
+                          "UPDATE config SET mask = \"255.255.255.0\",  router = \"ip\",  domain = \"bs.com\",  lease_time = 500 WHERE id = 1;");
+}
+
+void
+dhcpLeaseSqlBuilderPoolDeleteByIdTest()
+{
+  char sql[MAX_QUERY_LEN];
+
+  dhcpLeaseSqlBuilderPoolDeleteById (PoolTbl, sql, 1);
+
+  CU_ASSERT_STRING_EQUAL (sql, "DELETE FROM pool WHERE id = 1;");
+}
+
+void
+dhcpLeaseSqlBuilderConfigDeleteByIdTest()
+{
+  char sql[MAX_QUERY_LEN];
+
+  dhcpLeaseSqlBuilderConfigDeleteById (ConfigTbl, sql, 1);
+
+  CU_ASSERT_STRING_EQUAL (sql, "DELETE FROM config WHERE id = 1;");
+}
+
+void
+dhcpLeaseSqlBuilderNewPoolTest()
+{
+  char sql[MAX_QUERY_LEN];
+
+  dhcpLeasePoolResult_t lease =
+  {
+    .mac = "some_mac",
+    .host = "ali", .lease_flag = 1,
+    .ip = "ip", .config = {
+      .id = 1
+    }
+  };
+
+  dhcpLeaseSqlBuilderNewPool (PoolTbl, sql, lease);
+
+  CU_ASSERT_STRING_EQUAL (sql,
+                          "INSERT INTO pool (conf_id, ip, host, mac, lease_flag) VALUES (1, \"ip\", \"ali\", \"some_mac\", 1);");
+}
+
+void
+dhcpLeaseSqlBuilderNewConfTest()
+{
+  char sql[MAX_QUERY_LEN];
+
+  dhcpLeaseConfigResult_t conf =
+  {
+    .id = 1,
+    .mask = "255.255.255.0",
+    .router = "ip",
+    .domain = "bs.com",
+    .lease_time = 500,
+  };
+
+  dhcpLeaseSqlBuilderNewConf (ConfigTbl, sql, conf);
+
+  CU_ASSERT_STRING_EQUAL (sql,
+                          "INSERT INTO config (mask, router, domain, lease_time) VALUES (\"255.255.255.0\", \"ip\", \"bs.com\", 500);");
 }

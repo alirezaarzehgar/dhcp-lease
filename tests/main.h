@@ -20,6 +20,12 @@ CU_TestInfo lease_tests[] =
   {"dhcpLeasePoolGetByIpTest", dhcpLeasePoolGetByIpTest},
   {"dhcpLeasePoolCountTest", dhcpLeasePoolCountTest},
   {"dhcpLeaseConfCountTest", dhcpLeaseConfCountTest},
+  {"dhcpLeaseSqlBuilderPoolUpdateTest", dhcpLeaseSqlBuilderPoolUpdateTest},
+  {"dhcpLeaseSqlBuilderConfUpdateTest", dhcpLeaseSqlBuilderConfUpdateTest},
+  {"dhcpLeaseSqlBuilderPoolDeleteByIdTest", dhcpLeaseSqlBuilderPoolDeleteByIdTest},
+  {"dhcpLeaseSqlBuilderConfigDeleteByIdTest", dhcpLeaseSqlBuilderConfigDeleteByIdTest},
+  {"dhcpLeaseSqlBuilderNewPoolTest", dhcpLeaseSqlBuilderNewPoolTest},
+  {"dhcpLeaseSqlBuilderNewConfTest", dhcpLeaseSqlBuilderNewConfTest},
   CU_TEST_INFO_NULL,
 };
 
